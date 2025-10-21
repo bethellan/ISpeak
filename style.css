@@ -1,28 +1,27 @@
 /* MyNewVoice - Enhanced Communication App Styles */
-/* Responsive Design with Scalable Fonts and Layouts */
+/* Responsive Design with Optimized Button Sizes and Larger Text */
 
 /* CSS Custom Properties for Responsive Design */
 :root {
-  /* Responsive font sizes */
-  --font-xs: clamp(0.75rem, 2vw, 0.85rem);    /* 12-14px */
-  --font-sm: clamp(0.875rem, 2.5vw, 1rem);    /* 14-16px */
-  --font-md: clamp(1rem, 3vw, 1.2rem);        /* 16-19px */
-  --font-lg: clamp(1.2rem, 4vw, 1.5rem);      /* 19-24px */
-  --font-xl: clamp(1.4rem, 5vw, 1.8rem);      /* 22-29px */
-  --font-xxl: clamp(1.6rem, 6vw, 2.2rem);     /* 26-35px */
+  /* Responsive font sizes - INCREASED */
+  --font-xs: clamp(0.85rem, 2.5vw, 1rem);      /* 14-16px */
+  --font-sm: clamp(1rem, 3vw, 1.3rem);         /* 16-21px */
+  --font-md: clamp(1.2rem, 3.5vw, 1.5rem);     /* 19-24px */
+  --font-lg: clamp(1.4rem, 4.5vw, 1.8rem);     /* 22-29px */
+  --font-xl: clamp(1.6rem, 5.5vw, 2.2rem);     /* 26-35px */
+  --font-xxl: clamp(1.8rem, 6.5vw, 2.5rem);    /* 29-40px */
   
-  /* Responsive spacing */
-  --space-xs: clamp(0.5rem, 1.5vw, 0.75rem);
-  --space-sm: clamp(0.75rem, 2vw, 1rem);
-  --space-md: clamp(1rem, 3vw, 1.5rem);
-  --space-lg: clamp(1.5rem, 4vw, 2rem);
-  --space-xl: clamp(2rem, 5vw, 2.5rem);
+  /* Responsive spacing - ADJUSTED for smaller buttons */
+  --space-xs: clamp(0.375rem, 1.5vw, 0.5rem);
+  --space-sm: clamp(0.5rem, 2vw, 0.75rem);
+  --space-md: clamp(0.75rem, 2.5vw, 1rem);
+  --space-lg: clamp(1rem, 3vw, 1.25rem);
+  --space-xl: clamp(1.25rem, 4vw, 1.5rem);
   
   /* Responsive border radii */
   --radius-sm: clamp(0.5rem, 1.5vw, 0.75rem);
   --radius-md: clamp(0.75rem, 2vw, 1rem);
-  --radius-lg: clamp(1rem, 3vw, 1.5rem);
-  --radius-xl: clamp(1.5rem, 4vw, 2rem);
+  --radius-lg: clamp(1rem, 2.5vw, 1.25rem);
   
   /* Colors */
   --primary-color: #4CAF50;
@@ -49,29 +48,29 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
   font-size: var(--font-md);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .container {
   max-width: min(1200px, 95%);
   margin: 0 auto;
   background-color: var(--bg-light);
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   backdrop-filter: blur(10px);
 }
 
-/* Message Bar with Responsive Font */
+/* Message Bar with Larger Responsive Font */
 #messageBar {
   background: linear-gradient(135deg, #e9f7e9, #d4edda);
   border: clamp(2px, 0.5vw, 3px) solid var(--primary-color);
-  border-radius: var(--radius-lg);
-  padding: var(--space-lg);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
   margin-bottom: var(--space-lg);
-  min-height: clamp(50px, 8vw, 60px);
+  min-height: clamp(45px, 6vw, 55px);
   text-align: center;
-  font-size: var(--font-xxl);
+  font-size: var(--font-xxl); /* LARGER */
   font-weight: bold;
   color: #155724;
   transition: all 0.3s ease;
@@ -84,16 +83,16 @@ body {
 #messageBar p {
   margin: 0;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
-/* Tab Styles with Responsive Typography */
+/* Tab Styles with Larger Font */
 .tab-container {
   display: flex;
   justify-content: center;
   margin-bottom: var(--space-lg);
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border-radius: 50px;
+  border-radius: 25px;
   padding: var(--space-xs);
   flex-wrap: wrap;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -102,17 +101,17 @@ body {
 }
 
 .tab {
-  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.25rem);
+  padding: var(--space-sm) var(--space-md);
   background-color: transparent;
   border: none;
-  border-radius: 50px;
-  font-size: var(--font-sm);
+  border-radius: 20px;
+  font-size: var(--font-sm); /* LARGER */
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   color: #6c757d;
   flex: 1;
-  min-width: clamp(100px, 20vw, 140px);
+  min-width: clamp(90px, 18vw, 120px);
   position: relative;
   overflow: hidden;
   text-align: center;
@@ -146,21 +145,21 @@ body {
   transform: translateY(-2px);
 }
 
-/* Grid Layout with Responsive Columns */
+/* Grid Layout with Smaller Buttons */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); /* SMALLER */
   gap: var(--space-md);
   padding: var(--space-sm);
 }
 
-/* Base Grid Button Styles with Responsive Typography */
+/* Base Grid Button Styles - SMALLER BUTTONS, LARGER TEXT */
 .grid-button {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border: clamp(2px, 0.5vw, 3px) solid #dee2e6;
-  border-radius: var(--radius-lg);
-  padding: var(--space-md) var(--space-sm);
-  min-height: clamp(140px, 20vw, 180px);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-sm); /* SMALLER PADDING */
+  min-height: clamp(100px, 15vw, 130px); /* SMALLER HEIGHT */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -178,7 +177,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
   transform: scaleX(0);
   transition: transform 0.3s ease;
@@ -189,8 +188,8 @@ body {
 }
 
 .grid-button:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: translateY(-3px) scale(1.02); /* SMALLER HOVER EFFECT */
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
   border-color: var(--primary-color);
 }
 
@@ -200,10 +199,10 @@ body {
 }
 
 .grid-button img {
-  max-width: clamp(60px, 12vw, 90px);
-  max-height: clamp(60px, 12vw, 90px);
+  max-width: clamp(45px, 10vw, 65px); /* SMALLER IMAGES */
+  max-height: clamp(45px, 10vw, 65px);
   margin-bottom: var(--space-sm);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   transition: transform 0.3s ease;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
   width: auto;
@@ -215,17 +214,17 @@ body {
 }
 
 .grid-button span {
-  font-size: var(--font-sm);
+  font-size: var(--font-sm); /* LARGER TEXT */
   font-weight: bold;
   color: var(--text-dark);
   text-align: center;
-  line-height: 1.4;
+  line-height: 1.3;
   text-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Enhanced My People Styles with Responsive Larger Images */
+/* Enhanced My People Styles - SMALLER BUTTONS, LARGER TEXT */
 [data-category="MyPeople"] .grid-button {
-  min-height: clamp(200px, 30vw, 260px);
+  min-height: clamp(150px, 22vw, 180px); /* SMALLER HEIGHT */
   padding: var(--space-md) var(--space-sm);
   background: linear-gradient(135deg, #f0f8ff, #e6f3ff);
   border: clamp(2px, 0.5vw, 3px) solid #bbdefb;
@@ -237,10 +236,10 @@ body {
 }
 
 [data-category="MyPeople"] .grid-button img {
-  max-width: clamp(80px, 15vw, 120px);
-  max-height: clamp(80px, 15vw, 120px);
+  max-width: clamp(60px, 12vw, 80px); /* SMALLER IMAGES */
+  max-height: clamp(60px, 12vw, 80px);
   border: clamp(2px, 0.5vw, 3px) solid #e3f2fd;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   margin-bottom: var(--space-sm);
 }
 
@@ -249,7 +248,7 @@ body {
 }
 
 [data-category="MyPeople"] .grid-button span {
-  font-size: var(--font-lg);
+  font-size: var(--font-md); /* LARGER NAME TEXT */
   margin-bottom: var(--space-xs);
   color: #1976d2;
   font-weight: 700;
@@ -257,12 +256,12 @@ body {
 
 .person-details {
   margin-top: var(--space-sm);
-  line-height: 1.4;
+  line-height: 1.3;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-xs);
+  gap: 2px;
 }
 
 .person-details small {
@@ -270,7 +269,7 @@ body {
   font-size: var(--font-xs);
   color: #555;
   text-align: center;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .occupation {
@@ -278,24 +277,24 @@ body {
   font-style: italic;
   font-weight: 600;
   background: rgba(33, 150, 243, 0.1);
-  padding: var(--space-xs) var(--space-sm);
-  border-radius: var(--radius-md);
-  margin: 2px 0;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  margin: 1px 0;
   font-size: var(--font-xs);
 }
 
-/* Enhanced Countdown Styles with Responsive Typography */
+/* Enhanced Countdown Styles with Larger Text */
 .countdown {
   color: #e91e63 !important;
   font-weight: bold;
   background: linear-gradient(135deg, #fce4ec, #f8bbd9);
-  padding: clamp(0.375rem, 1vw, 0.5rem) clamp(0.75rem, 2vw, 1rem);
-  border-radius: var(--radius-lg);
+  padding: clamp(0.25rem, 1vw, 0.375rem) clamp(0.5rem, 1.5vw, 0.75rem);
+  border-radius: var(--radius-md);
   margin-top: var(--space-xs) !important;
   border: 1px solid #f8bbd9;
   box-shadow: 0 2px 4px rgba(233, 30, 99, 0.2);
-  line-height: 1.3;
-  font-size: var(--font-xs);
+  line-height: 1.2;
+  font-size: var(--font-xs); /* LARGER */
   text-align: center;
   white-space: normal;
   word-wrap: break-word;
@@ -306,7 +305,7 @@ body {
 .countdown[data-days="0"] {
   background: linear-gradient(135deg, #4CAF50, #66bb6a) !important;
   color: white !important;
-  font-size: var(--font-sm);
+  font-size: var(--font-sm); /* LARGER */
   font-weight: 800;
   animation: pulse-glow 2s ease-in-out infinite;
   transform-origin: center;
@@ -315,18 +314,18 @@ body {
 .countdown[data-days="1"] {
   background: linear-gradient(135deg, #FF9800, #FFB74D) !important;
   color: white !important;
-  font-size: var(--font-sm);
+  font-size: var(--font-sm); /* LARGER */
   font-weight: 800;
 }
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
-    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+    transform: scale(1.03);
   }
 }
 
@@ -364,12 +363,12 @@ body {
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   .grid-button {
-    border-width: 4px;
+    border-width: 3px;
     border-color: #000;
   }
   
   #messageBar {
-    border-width: 4px;
+    border-width: 3px;
     border-color: #000;
   }
   
@@ -487,7 +486,7 @@ body {
   
   .container {
     padding: var(--space-md);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
   }
   
   .grid {
@@ -498,36 +497,36 @@ body {
   
   #messageBar {
     font-size: var(--font-xl);
-    padding: var(--space-md);
+    padding: var(--space-sm);
     margin-bottom: var(--space-md);
   }
   
   .grid-button {
-    min-height: clamp(120px, 25vw, 150px);
+    min-height: clamp(90px, 20vw, 110px);
     padding: var(--space-sm) var(--space-xs);
   }
   
   /* Mobile My People */
   [data-category="MyPeople"] .grid-button {
-    min-height: clamp(180px, 35vw, 220px);
+    min-height: clamp(130px, 25vw, 150px);
   }
   
   [data-category="MyPeople"] .grid-button img {
-    max-width: clamp(70px, 14vw, 90px);
-    max-height: clamp(70px, 14vw, 90px);
+    max-width: clamp(50px, 10vw, 60px);
+    max-height: clamp(50px, 10vw, 60px);
   }
 }
 
 @media (max-width: 480px) {
   .tab-container {
-    border-radius: var(--radius-xl);
-    padding: var(--space-xs);
+    border-radius: 20px;
+    padding: 4px;
   }
   
   .tab {
-    padding: var(--space-sm);
+    padding: 8px 10px;
     font-size: var(--font-xs);
-    min-width: clamp(70px, 25vw, 90px);
+    min-width: clamp(70px, 22vw, 85px);
   }
   
   .grid {
@@ -541,11 +540,11 @@ body {
   }
   
   .grid-button {
-    min-height: clamp(110px, 30vw, 140px);
+    min-height: clamp(80px, 25vw, 100px);
   }
   
   [data-category="MyPeople"] .grid-button {
-    min-height: clamp(160px, 40vw, 200px);
+    min-height: clamp(120px, 30vw, 140px);
   }
 }
 
@@ -556,7 +555,7 @@ body {
   }
   
   .grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
     gap: var(--space-lg);
   }
 }
