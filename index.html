@@ -18,15 +18,80 @@
             <button class="tab active" data-category="food">Food & Drink</button>
             <button class="tab" data-category="feelings">Feelings</button>
             <button class="tab" data-category="selfcare">Self Care</button>
+            <button class="tab" data-category="health">Health</button>
+            <button class="tab" data-category="routine">Daily Routine</button>
             <button class="tab" data-category="MyPeople">My People</button>
             <button class="tab" data-category="social">Social Chat</button>
             <button class="tab" data-category="activities">Activities</button>
+            <button class="tab" data-category="entertainment">Entertainment</button>
+            <button class="tab" data-category="memories">Memories</button>
             <button class="tab" data-category="environment">Comfort</button>
         </div>
         
         <!-- Dynamic Button Grid -->
         <div class="grid" id="buttonGrid">
             <!-- Buttons will be loaded here by JavaScript -->
+        </div>
+
+        <!-- Management Button (Hidden by default) -->
+        <button id="managementToggle" class="management-toggle">⚙️ Manage Content</button>
+
+        <!-- Content Management Panel (Hidden by default) -->
+        <div id="managementPanel" class="management-panel" style="display: none;">
+            <h3>Content Management</h3>
+            
+            <div class="management-section">
+                <h4>Export/Backup</h4>
+                <button onclick="exportButtonData()" class="management-btn">📥 Export All Data</button>
+                <p class="help-text">Download a backup of all phrases and people</p>
+            </div>
+
+            <div class="management-section">
+                <h4>Add New Phrase</h4>
+                <select id="addCategorySelect">
+                    <option value="food">Food & Drink</option>
+                    <option value="feelings">Feelings</option>
+                    <option value="selfcare">Self Care</option>
+                    <option value="health">Health</option>
+                    <option value="routine">Daily Routine</option>
+                    <option value="social">Social Chat</option>
+                    <option value="activities">Activities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="memories">Memories</option>
+                    <option value="environment">Comfort</option>
+                </select>
+                <input type="text" id="newPhraseText" placeholder="Enter phrase text..." class="management-input">
+                <input type="text" id="newPhraseImage" placeholder="Image filename (optional)" class="management-input">
+                <button onclick="addNewPhrase()" class="management-btn">➕ Add Phrase</button>
+            </div>
+
+            <div class="management-section">
+                <h4>Remove Phrase</h4>
+                <select id="removeCategorySelect">
+                    <option value="food">Food & Drink</option>
+                    <option value="feelings">Feelings</option>
+                    <option value="selfcare">Self Care</option>
+                    <option value="health">Health</option>
+                    <option value="routine">Daily Routine</option>
+                    <option value="social">Social Chat</option>
+                    <option value="activities">Activities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="memories">Memories</option>
+                    <option value="environment">Comfort</option>
+                </select>
+                <select id="removePhraseSelect" class="management-input">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <button onclick="removeSelectedPhrase()" class="management-btn remove-btn">🗑️ Remove Selected Phrase</button>
+            </div>
+
+            <div class="management-section">
+                <h4>Quick Actions</h4>
+                <button onclick="showAllPhrases()" class="management-btn">👁️ View All Phrases</button>
+                <button onclick="reloadApp()" class="management-btn">🔄 Reload App</button>
+            </div>
+
+            <button onclick="hideManagementPanel()" class="management-btn close-btn">❌ Close Management</button>
         </div>
     </div>
     
