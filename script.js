@@ -895,22 +895,307 @@ function exportButtonData() {
 }
 
 // ============================================================================
+// EDIT AND REORDER FUNCTIONS
+// ============================================================================
+
+// Function to populate edit phrase dropdown
+function populateEditPhraseOptions() {
+    const categorySelect = document.getElementById('editCategorySelect');
+    const phraseSelect = document.getElementById('editPhraseSelect');
+    const category = categorySelect.value;
+    
+    phraseSelect.innerHTML = '';
+    
+    if (buttonData[category]) {
+        buttonData[category].forEach(phrase => {
+            const option = document.createElement('option');
+            option.value = phrase.text;
+            option.textContent = phrase.text;
+            phraseSelect.appendChild(option);
+        });
+        
+        // Auto-fill the first phrase for editing
+        if (buttonData[category].length > 0) {
+            const firstPhrase = buttonData[category][0];
+            document.getElementById('editPhraseText').value = firstPhrase.text;
+            document.getElementById('editPhraseImage').value = firstPhrase.image;
+        }
+    }
+}
+
+// Function to update phrase when selection changes
+function updateEditFields() {
+    const category = document.getElementById('editCategorySelect').value;
+    const phraseSelect = document.getElementById('editPhraseSelect');
+    const selectedText = phraseSelect.value;
+    
+    if (selectedText && buttonData[category]) {
+        const phrase = buttonData[category].find(p => p.text === selectedText);
+        if (phrase) {
+            document.getElementById('editPhraseText').value = phrase.text;
+            document.getElementById('editPhraseImage').value = phrase.image;
+        }
+    }
+}
+
+// Function to update an existing phrase
+function updateSelectedPhrase() {
+    const category = document.getElementById('editCategorySelect').value;
+    const oldText = document.getElementById('editPhraseSelect').value;
+    const newText = document.getElementById('editPhraseText').value.trim();
+    const newImage = document.getElementById('editPhraseImage').value.trim() || 'default.jpg';
+    
+    if (!newText) {
+        alert('Please enter phrase text');
+        return;
+    }
+    
+    if (!oldText) {
+        alert('Please select a phrase to edit');
+        return;
+    }
+    
+    // Find the phrase to update
+    const phraseIndex = buttonData[category].findIndex(p => p.text === oldText);
+    if (phraseIndex === -1) {
+        alert('Phrase not found');
+        return;
+    }
+    
+    // Check if new text already exists (and it's not the same phrase)
+    const duplicate = buttonData[category].find((p, index) => 
+        p.text === newText && index !== phraseIndex
+    );
+    
+    if (duplicate) {
+        alert('This phrase already exists in the selected category');
+        return;
+    }
+    
+    // Update the phrase
+    buttonData[category][phraseIndex] = {
+        text: newText,
+        image: newImage
+    };
+    
+    // Save to localStorage
+    saveDataToStorage();
+    
+    // Update all dropdowns
+    populateRemovePhraseOptions();
+    populateEditPhraseOptions();
+    populateReorderList();
+    
+    // Refresh the current grid if we're viewing that category
+    const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
+    if (activeCategory === category) {
+        populateGrid(category);
+    }
+    
+    alert(`Updated phrase to "${newText}"`);
+}
+
+// Function to populate reorder list
+function populateReorderList() {
+    const category = document.getElementById('reorderCategorySelect').value;
+    const phraseList = document.getElementById('phraseList');
+    
+    phraseList.innerHTML = '';
+    
+    if (!buttonData[category] || buttonData[category].length === 0) {
+        phraseList.innerHTML = `
+            <div class="reorder-instructions">
+                No phrases in this category to reorder
+            </div>
+        `;
+        return;
+    }
+    
+    buttonData[category].forEach((phrase, index) => {
+        const li = document.createElement('li');
+        li.className = 'phrase-item';
+        li.draggable = true;
+        li.dataset.index = index;
+        
+        li.innerHTML = `
+            <span class="phrase-handle">☰</span>
+            <span class="phrase-text">${phrase.text}</span>
+            <span class="phrase-image">${phrase.image}</span>
+        `;
+        
+        // Add drag and drop event listeners
+        li.addEventListener('dragstart', handleDragStart);
+        li.addEventListener('dragover', handleDragOver);
+        li.addEventListener('drop', handleDrop);
+        li.addEventListener('dragend', handleDragEnd);
+        
+        phraseList.appendChild(li);
+    });
+}
+
+// Drag and drop functions for reordering
+let draggedItem = null;
+
+function handleDragStart(e) {
+    draggedItem = this;
+    this.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    this.classList.add('drop-zone');
+}
+
+function handleDragEnd(e) {
+    this.classList.remove('dragging');
+    document.querySelectorAll('.phrase-item').forEach(item => {
+        item.classList.remove('drop-zone');
+    });
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    this.classList.remove('drop-zone');
+    
+    if (draggedItem !== this) {
+        const phraseList = document.getElementById('phraseList');
+        const items = Array.from(phraseList.querySelectorAll('.phrase-item'));
+        const fromIndex = items.indexOf(draggedItem);
+        const toIndex = items.indexOf(this);
+        
+        if (fromIndex !== -1 && toIndex !== -1) {
+            // Reorder the array
+            const category = document.getElementById('reorderCategorySelect').value;
+            const [movedItem] = buttonData[category].splice(fromIndex, 1);
+            buttonData[category].splice(toIndex, 0, movedItem);
+            
+            // Update the display
+            if (fromIndex < toIndex) {
+                phraseList.insertBefore(draggedItem, this.nextSibling);
+            } else {
+                phraseList.insertBefore(draggedItem, this);
+            }
+            
+            // Update indices
+            items.forEach((item, index) => {
+                item.dataset.index = index;
+            });
+        }
+    }
+}
+
+// Function to save the new order
+function saveNewOrder() {
+    const category = document.getElementById('reorderCategorySelect').value;
+    
+    // The array is already reordered from the drag and drop
+    // Just need to save it
+    saveDataToStorage();
+    
+    // Refresh the current grid if we're viewing that category
+    const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
+    if (activeCategory === category) {
+        populateGrid(category);
+    }
+    
+    alert(`New order saved for ${category}`);
+}
+
+// Function to populate all dropdowns when category changes
+function populateAllDropdowns() {
+    populateRemovePhraseOptions();
+    populateEditPhraseOptions();
+    populateReorderList();
+}
+
+// ============================================================================
+// ENHANCED EDITING UTILITIES
+// ============================================================================
+
+// Quick edit by double-clicking phrases in the main grid
+function enableQuickEdit() {
+    document.addEventListener('dblclick', function(e) {
+        const gridButton = e.target.closest('.grid-button');
+        if (gridButton && !gridButton.closest('[data-category="MyPeople"]')) {
+            const phraseText = gridButton.querySelector('span').textContent;
+            const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
+            
+            // Switch to management panel and pre-fill edit fields
+            showPasswordModal();
+            
+            // After password is entered, set up the edit fields
+            setTimeout(() => {
+                if (document.getElementById('managementPanel').style.display === 'block') {
+                    document.getElementById('editCategorySelect').value = activeCategory;
+                    populateEditPhraseOptions();
+                    document.getElementById('editPhraseSelect').value = phraseText;
+                    updateEditFields();
+                    
+                    // Scroll to edit section
+                    document.getElementById('editPhraseText').scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'center' 
+                    });
+                    document.getElementById('editPhraseText').focus();
+                }
+            }, 100);
+        }
+    });
+}
+
+// Initialize quick edit
+enableQuickEdit();
+
+// Export current order for backup
+function exportCategoryOrder() {
+    const category = document.getElementById('reorderCategorySelect').value;
+    const orderData = {
+        category: category,
+        phrases: buttonData[category]
+    };
+    
+    const dataStr = JSON.stringify(orderData, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(dataBlob);
+    link.download = `mynevoice_${category}_order.json`;
+    link.click();
+    
+    alert(`Exported order for ${category}`);
+}
+
+// ============================================================================
 // INITIALIZATION - FIXED EVENT LISTENERS
 // ============================================================================
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('MyNewVoice app initializing...');
     
+    // Debug: Check if buttonData exists
+    console.log('Button data loaded:', buttonData);
+    console.log('Food category has items:', buttonData.food ? buttonData.food.length : 'No food category');
+    
     // Load saved data first
     loadDataFromStorage();
     
+    // Debug after loading
+    console.log('After loading from storage - Food items:', buttonData.food.length);
+    
     // Load the first category by default
     populateGrid('food');
+    
+    // Debug after populating grid
+    console.log('Grid populated, checking button count:', document.querySelectorAll('.grid-button').length);
     
     // Set up tab click handlers
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
+            console.log('Tab clicked:', category, 'Items:', buttonData[category] ? buttonData[category].length : 0);
             populateGrid(category);
             
             // Update active tab styling
@@ -922,10 +1207,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up management toggle button - FIXED
     const toggleBtn = document.getElementById('managementToggle');
     if (toggleBtn) {
+        console.log('Management toggle button found');
         toggleBtn.addEventListener('click', function() {
             console.log('Cog button clicked - showing password modal');
             showPasswordModal();
         });
+    } else {
+        console.error('Management toggle button NOT found!');
     }
     
     // Set up password modal buttons
@@ -975,23 +1263,67 @@ document.addEventListener('DOMContentLoaded', function() {
         resetData.addEventListener('click', resetToDefaultData);
     }
     
+    // EDIT AND REORDER EVENT LISTENERS
+    const editCategorySelect = document.getElementById('editCategorySelect');
+    if (editCategorySelect) {
+        editCategorySelect.addEventListener('change', function() {
+            populateEditPhraseOptions();
+        });
+    }
+
+    const editPhraseSelect = document.getElementById('editPhraseSelect');
+    if (editPhraseSelect) {
+        editPhraseSelect.addEventListener('change', updateEditFields);
+    }
+
+    const updatePhrase = document.getElementById('updatePhrase');
+    if (updatePhrase) {
+        updatePhrase.addEventListener('click', updateSelectedPhrase);
+    }
+
+    // Reorder functionality
+    const reorderCategorySelect = document.getElementById('reorderCategorySelect');
+    if (reorderCategorySelect) {
+        reorderCategorySelect.addEventListener('change', populateReorderList);
+    }
+
+    const saveOrder = document.getElementById('saveOrder');
+    if (saveOrder) {
+        saveOrder.addEventListener('click', saveNewOrder);
+    }
+
     // Update remove phrase options when category changes
     const removeCategorySelect = document.getElementById('removeCategorySelect');
     if (removeCategorySelect) {
         removeCategorySelect.addEventListener('change', populateRemovePhraseOptions);
     }
     
-    // Initial population of remove phrase options
-    setTimeout(populateRemovePhraseOptions, 100);
+    // Update all dropdowns when any category changes
+    [removeCategorySelect, editCategorySelect, reorderCategorySelect].forEach(select => {
+        if (select) {
+            select.addEventListener('change', function() {
+                populateRemovePhraseOptions();
+                populateEditPhraseOptions();
+                populateReorderList();
+            });
+        }
+    });
+
+    // Initial population of all dropdowns
+    setTimeout(() => {
+        populateRemovePhraseOptions();
+        populateEditPhraseOptions();
+        populateReorderList();
+    }, 500);
     
     // Add developer tools to console for easier content management
     console.log('MyNewVoice Developer Tools Available:');
     console.log('- exportButtonData(): Export all data as JSON');
-    console.log('- addPhraseToCategory(category, text, image): Add new phrase');
-    console.log('- removePhraseFromCategory(category, text): Remove phrase');
-    console.log('- addPerson(personData): Add new person');
+    console.log('- addNewPhrase(): Add new phrase through UI');
+    console.log('- showAllPhrases(): View all phrases in console');
     
     console.log('App initialization complete!');
+    console.log('Available categories:', Object.keys(buttonData));
 });
 
 // Service Worker Registration

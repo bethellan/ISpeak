@@ -78,6 +78,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative; /* For cog positioning */
 }
 
 #messageBar p {
@@ -360,8 +361,6 @@ body {
   border-color: #80cbc4;
 }
 
-/* Add these to the existing category-specific color schemes section */
-
 [data-category="health"] .grid-button {
     background: linear-gradient(135deg, #ffebee, #ffcdd2);
     border-color: #ef9a9a;
@@ -382,61 +381,10 @@ body {
     border-color: #a5d6a7;
 }
 
-
 /* ========================================================================== */
-/* PASSWORD MODAL STYLES - ENHANCED */
+/* MANAGEMENT TOGGLE STYLES (Original Position - Top Right) */
 /* ========================================================================== */
 
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-    display: none; /* Start hidden */
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    animation: fadeIn 0.3s ease;
-}
-
-.modal-content {
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    border-radius: var(--radius-lg);
-    padding: var(--space-xl);
-    max-width: min(400px, 90%);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    text-align: center;
-    border: 3px solid var(--primary-color);
-}
-
-.modal-content h3 {
-    color: var(--primary-color);
-    margin-bottom: var(--space-md);
-    font-size: var(--font-lg);
-}
-
-.modal-content p {
-    margin-bottom: var(--space-lg);
-    color: var(--text-dark);
-    font-size: var(--font-sm);
-}
-
-.modal-actions {
-    display: flex;
-    gap: var(--space-sm);
-    margin-top: var(--space-lg);
-    justify-content: center;
-}
-
-/* Ensure modal is above everything */
-.modal, .management-panel {
-    z-index: 2000;
-}
-
-/* Make sure management toggle is visible and working */
 .management-toggle {
     position: absolute;
     top: 50%;
@@ -463,13 +411,54 @@ body {
     transform: translateY(-50%) scale(1.1);
 }
 
-.management-toggle:focus {
+.management-toggle:focus-visible {
     outline: 3px solid var(--primary-color);
     outline-offset: 2px;
 }
 
 /* ========================================================================== */
-/* PERSON PROFILE MODAL STYLES (NEW ADDITION) */
+/* MODAL STYLES */
+/* ========================================================================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    max-width: min(400px, 90%);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.modal-content h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--space-md);
+    font-size: var(--font-lg);
+}
+
+.modal-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    justify-content: center;
+}
+
+/* ========================================================================== */
+/* PERSON PROFILE MODAL STYLES */
 /* ========================================================================== */
 
 .person-modal {
@@ -580,7 +569,6 @@ body {
   margin-top: var(--space-xs);
 }
 
-/* Enhanced profile details for new fields */
 .profile-details {
   margin-bottom: var(--space-lg);
   background: #f8f9fa;
@@ -625,7 +613,6 @@ body {
   font-weight: bold;
 }
 
-/* Additional Photos Section */
 .additional-photos {
   margin-bottom: var(--space-lg);
 }
@@ -670,7 +657,6 @@ body {
   font-style: italic;
 }
 
-/* Enhanced Profile Action Buttons */
 .profile-actions {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -714,381 +700,91 @@ body {
 }
 
 /* ========================================================================== */
-/* EXISTING RESPONSIVE AND UTILITY STYLES */
+/* EDIT AND REORDER STYLES */
 /* ========================================================================== */
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .grid-button {
-    border-width: 3px;
-    border-color: #000;
-  }
-  
-  #messageBar {
-    border-width: 3px;
-    border-color: #000;
-  }
-  
-  .tab {
-    border: 2px solid #000;
-  }
-  
-  .tab.active {
-    border: 2px solid #000;
-  }
-  
-  .countdown {
-    border-width: 2px;
-    border-color: #000;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  
-  .grid-button:hover {
-    transform: none;
-  }
-  
-  .grid-button:hover img {
-    transform: none;
-  }
-  
-  .tab::before {
-    display: none;
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-dark: #e2e8f0;
-    --bg-light: #2d3748;
-  }
-  
-  body {
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-  }
-  
-  .container {
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
-  }
-  
-  .grid-button {
-    background: linear-gradient(135deg, #4a5568, #718096);
-    border-color: #718096;
-    color: var(--text-dark);
-  }
-  
-  .grid-button span {
-    color: var(--text-dark);
-  }
-  
-  #messageBar {
-    background: linear-gradient(135deg, #2d5a2d, #3d6b3d);
-    color: var(--text-dark);
-    border-color: var(--primary-color);
-  }
-  
-  .tab-container {
-    background: linear-gradient(135deg, #4a5568, #718096);
-  }
-  
-  .tab {
-    color: #cbd5e0;
-  }
-  
-  .tab.active {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: var(--text-light);
-  }
-  
-  /* Dark mode for My People */
-  [data-category="MyPeople"] .grid-button {
-    background: linear-gradient(135deg, #2c5282, #2b6cb0);
-    border-color: #4299e1;
-  }
-  
-  [data-category="MyPeople"] .grid-button span {
-    color: #90cdf4;
-  }
-  
-  .person-details small {
-    color: #cbd5e0;
-  }
-  
-  .occupation {
-    background: rgba(66, 153, 225, 0.2);
-    color: #90cdf4 !important;
-  }
-  
-  .countdown {
-    background: linear-gradient(135deg, #553c9a, #805ad5);
-    color: #e9d8fd !important;
-    border-color: #9f7aea;
-  }
-
-  /* Dark mode for modal */
-  .person-profile {
-    background: linear-gradient(135deg, #2d3748, #4a5568);
-    color: var(--text-dark);
-  }
-  
-  .profile-info h2 {
-    color: var(--text-dark);
-  }
-  
-  .detail-label {
-    color: var(--text-dark);
-  }
-  
-  .photo-placeholder {
-    background: #4a5568;
-    color: #cbd5e0;
-  }
-  
-  .additional-photo {
-    border-color: #4a5568;
-  }
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  body {
+.reorder-container {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 2px solid #dee2e6;
+    border-radius: var(--radius-sm);
     padding: var(--space-sm);
-  }
-  
-  .container {
-    padding: var(--space-md);
-    border-radius: var(--radius-md);
-  }
-  
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-sm);
-    padding: var(--space-xs);
-  }
-  
-  #messageBar {
-    font-size: var(--font-xl);
-    padding: var(--space-sm);
-    margin-bottom: var(--space-md);
-  }
-  
-  .grid-button {
-    min-height: clamp(90px, 20vw, 110px);
-    padding: var(--space-sm) var(--space-xs);
-  }
-  
-  /* Mobile My People */
-  [data-category="MyPeople"] .grid-button {
-    min-height: clamp(130px, 25vw, 150px);
-  }
-  
-  [data-category="MyPeople"] .grid-button img {
-    max-width: clamp(50px, 10vw, 60px);
-    max-height: clamp(50px, 10vw, 60px);
-  }
-
-  /* Mobile modal */
-  .person-modal {
-    padding: var(--space-sm);
-  }
-  
-  .person-profile {
-    padding: var(--space-lg);
-  }
-  
-  .profile-header {
-    flex-direction: column;
-    text-align: center;
-    gap: var(--space-md);
-  }
-  
-  .profile-actions {
-    grid-template-columns: 1fr;
-  }
-  
-  .detail-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-xs);
-  }
-  
-  .detail-value {
-    text-align: left;
-  }
-  
-  .photo-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  
-  .additional-photo {
-    height: 80px;
-  }
-}
-
-@media (max-width: 480px) {
-  .tab-container {
-    border-radius: 20px;
-    padding: 4px;
-  }
-  
-  .tab {
-    padding: 8px 10px;
-    font-size: var(--font-xs);
-    min-width: clamp(70px, 22vw, 85px);
-  }
-  
-  .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-sm);
-  }
-  
-  #messageBar {
-    font-size: var(--font-lg);
-    padding: var(--space-sm);
-  }
-  
-  .grid-button {
-    min-height: clamp(80px, 25vw, 100px);
-  }
-  
-  [data-category="MyPeople"] .grid-button {
-    min-height: clamp(120px, 30vw, 140px);
-  }
-
-  /* Mobile modal */
-  .person-profile {
-    padding: var(--space-md);
-  }
-  
-  .photo-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .close-profile {
-    width: 35px;
-    height: 35px;
-    font-size: var(--font-md);
-  }
-}
-
-/* Large screen enhancements */
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1400px;
-  }
-  
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
-    gap: var(--space-lg);
-  }
-}
-
-/* Print styles */
-@media print {
-  body {
-    background: white !important;
-    padding: 0;
-  }
-  
-  .container {
-    box-shadow: none;
-    border-radius: 0;
-  }
-  
-  .tab-container, #messageBar {
-    display: none;
-  }
-  
-  .grid {
-    display: block;
-  }
-  
-  .grid-button {
-    break-inside: avoid;
-    border: 1px solid #000;
+    background: white;
     margin-bottom: var(--space-sm);
-  }
 }
 
-/* Focus styles for accessibility */
-.grid-button:focus {
-  outline: 3px solid var(--primary-color);
-  outline-offset: 2px;
+.phrase-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.tab:focus {
-  outline: 3px solid var(--primary-color);
-  outline-offset: 2px;
+.phrase-item {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm);
+    margin-bottom: var(--space-xs);
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: var(--radius-sm);
+    cursor: grab;
+    transition: all 0.3s ease;
+    user-select: none;
 }
 
-/* Voice speaking indicator */
-.grid-button.speaking {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
-  color: var(--text-light) !important;
-  border-color: #388E3C !important;
+.phrase-item:hover {
+    background: #e9ecef;
+    border-color: var(--primary-color);
 }
 
-.grid-button.speaking span {
-  color: var(--text-light) !important;
+.phrase-item:active {
+    cursor: grabbing;
+    transform: scale(1.02);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 
-/* Loading state */
-.grid-button.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.grid-button.loading::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* ========================================================================== */
-/* CONTENT MANAGEMENT STYLES */
-/* ========================================================================== */
-
-.management-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+.phrase-item.dragging {
+    opacity: 0.6;
     background: var(--primary-color);
     color: white;
-    border: none;
-    border-radius: 25px;
-    padding: 10px 15px;
-    font-size: var(--font-sm);
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    z-index: 100;
-    transition: all 0.3s ease;
 }
 
-.management-toggle:hover {
-    background: var(--primary-dark);
-    transform: scale(1.05);
+.phrase-handle {
+    margin-right: var(--space-sm);
+    font-size: var(--font-md);
+    color: #6c757d;
 }
+
+.phrase-item:hover .phrase-handle {
+    color: var(--primary-color);
+}
+
+.phrase-text {
+    flex: 1;
+    font-size: var(--font-sm);
+    color: var(--text-dark);
+}
+
+.phrase-image {
+    font-size: var(--font-xs);
+    color: #6c757d;
+    margin-left: var(--space-sm);
+    font-style: italic;
+}
+
+.reorder-instructions {
+    text-align: center;
+    padding: var(--space-md);
+    color: #6c757d;
+    font-style: italic;
+    border: 2px dashed #dee2e6;
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-sm);
+}
+
+/* ========================================================================== */
+/* MANAGEMENT PANEL STYLES */
+/* ========================================================================== */
 
 .management-panel {
     position: fixed;
@@ -1175,101 +871,173 @@ body {
     margin-top: var(--space-xs);
 }
 
-/* Make sure management panel works on mobile */
+/* ========================================================================== */
+/* RESPONSIVE STYLES */
+/* ========================================================================== */
+
+/* Mobile responsiveness */
 @media (max-width: 768px) {
+    body {
+        padding: var(--space-sm);
+    }
+    
+    .container {
+        padding: var(--space-md);
+        border-radius: var(--radius-md);
+    }
+    
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-sm);
+        padding: var(--space-xs);
+    }
+    
+    #messageBar {
+        font-size: var(--font-xl);
+        padding: var(--space-sm);
+        margin-bottom: var(--space-md);
+    }
+    
+    .grid-button {
+        min-height: clamp(90px, 20vw, 110px);
+        padding: var(--space-sm) var(--space-xs);
+    }
+    
+    /* Mobile My People */
+    [data-category="MyPeople"] .grid-button {
+        min-height: clamp(130px, 25vw, 150px);
+    }
+    
+    [data-category="MyPeople"] .grid-button img {
+        max-width: clamp(50px, 10vw, 60px);
+        max-height: clamp(50px, 10vw, 60px);
+    }
+
+    /* Mobile modal */
+    .person-modal {
+        padding: var(--space-sm);
+    }
+    
+    .person-profile {
+        padding: var(--space-lg);
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--space-md);
+    }
+    
+    .profile-actions {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-xs);
+    }
+    
+    .detail-value {
+        text-align: left;
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .additional-photo {
+        height: 80px;
+    }
+    
+    /* Mobile management */
     .management-panel {
         width: 95%;
         padding: var(--space-md);
     }
     
     .management-toggle {
-        bottom: 10px;
-        right: 10px;
-        font-size: var(--font-xs);
-        padding: 8px 12px;
+        width: 35px;
+        height: 35px;
+        font-size: var(--font-sm);
+    }
+    
+    /* Mobile reordering */
+    .phrase-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-xs);
+    }
+    
+    .phrase-image {
+        margin-left: 0;
+        align-self: flex-end;
+    }
+    
+    .reorder-container {
+        max-height: 200px;
     }
 }
 
-/* ========================================================================== */
-/* PASSWORD MODAL STYLES */
-/* ========================================================================== */
+@media (max-width: 480px) {
+    .tab-container {
+        border-radius: 20px;
+        padding: 4px;
+    }
+    
+    .tab {
+        padding: 8px 10px;
+        font-size: var(--font-xs);
+        min-width: clamp(70px, 22vw, 85px);
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+    }
+    
+    #messageBar {
+        font-size: var(--font-lg);
+        padding: var(--space-sm);
+    }
+    
+    .grid-button {
+        min-height: clamp(80px, 25vw, 100px);
+    }
+    
+    [data-category="MyPeople"] .grid-button {
+        min-height: clamp(120px, 30vw, 140px);
+    }
 
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    animation: fadeIn 0.3s ease;
+    /* Mobile modal */
+    .person-profile {
+        padding: var(--space-md);
+    }
+    
+    .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .close-profile {
+        width: 35px;
+        height: 35px;
+        font-size: var(--font-md);
+    }
 }
 
-.modal-content {
-    background: white;
-    border-radius: var(--radius-lg);
-    padding: var(--space-xl);
-    max-width: min(400px, 90%);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    text-align: center;
+/* Large screen enhancements */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .grid {
+        grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr));
+        gap: var(--space-lg);
+    }
 }
 
-.modal-content h3 {
-    color: var(--primary-color);
-    margin-bottom: var(--space-md);
-    font-size: var(--font-lg);
-}
-
-.modal-actions {
-    display: flex;
-    gap: var(--space-sm);
-    margin-top: var(--space-lg);
-    justify-content: center;
-}
-
-/* ========================================================================== */
-/* UPDATED MANAGEMENT TOGGLE STYLES (Top Right) */
-/* ========================================================================== */
-
-#messageBar {
-    position: relative; /* Needed for absolute positioning of cog */
-    padding-right: 60px; /* Make space for the cog */
-}
-
-.management-toggle {
-    position: absolute;
-    top: 50%;
-    right: var(--space-md);
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.9);
-    border: 2px solid var(--primary-color);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: var(--font-md);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    z-index: 100;
-}
-
-.management-toggle:hover {
-    background: var(--primary-color);
-    color: white;
-    transform: translateY(-50%) scale(1.1);
-}
-
-/* ========================================================================== */
-/* ENHANCED FOCUS STYLES */
-/* ========================================================================== */
-
+/* Focus styles for accessibility */
 .grid-button:focus-visible {
     outline: 3px solid var(--primary-color);
     outline-offset: 2px;
@@ -1286,34 +1054,13 @@ body {
     outline-offset: 2px;
 }
 
-/* ========================================================================== */
-/* IMAGE FALLBACK STYLES */
-/* ========================================================================== */
-
-.grid-button img {
-    /* Existing styles remain */
-    background: #f0f0f0; /* Fallback background */
+/* Voice speaking indicator */
+.grid-button.speaking {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+    color: var(--text-light) !important;
+    border-color: #388E3C !important;
 }
 
-.grid-button img:before {
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background-color: #f0f0f0;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="%23ccc"/><circle cx="25" cy="20" r="5" fill="%23999"/><path d="M15 35 Q25 25 35 35" stroke="%23999" stroke-width="2" fill="none"/></svg>');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 50%;
-}
-
-/* Dark mode support for image fallback */
-@media (prefers-color-scheme: dark) {
-    .grid-button img:before {
-        background-color: #4a5568;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="20" fill="%23718096"/><circle cx="25" cy="20" r="5" fill="%23cbd5e0"/><path d="M15 35 Q25 25 35 35" stroke="%23cbd5e0" stroke-width="2" fill="none"/></svg>');
-    }
+.grid-button.speaking span {
+    color: var(--text-light) !important;
 }

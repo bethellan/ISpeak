@@ -98,6 +98,53 @@
                 <button id="removePhrase" class="management-btn remove-btn">🗑️ Remove Selected Phrase</button>
             </div>
 
+<!-- Add this after the "Remove Phrase" section and before the "Quick Actions" section -->
+
+<div class="management-section">
+    <h4>Edit Existing Phrase</h4>
+    <select id="editCategorySelect">
+        <option value="food">Food & Drink</option>
+        <option value="feelings">Feelings</option>
+        <option value="selfcare">Self Care</option>
+        <option value="health">Health</option>
+        <option value="routine">Daily Routine</option>
+        <option value="social">Social Chat</option>
+        <option value="activities">Activities</option>
+        <option value="entertainment">Entertainment</option>
+        <option value="memories">Memories</option>
+        <option value="environment">Comfort</option>
+    </select>
+    <select id="editPhraseSelect" class="management-input">
+        <!-- Options will be populated by JavaScript -->
+    </select>
+    <input type="text" id="editPhraseText" placeholder="New phrase text..." class="management-input">
+    <input type="text" id="editPhraseImage" placeholder="New image filename (optional)" class="management-input">
+    <button id="updatePhrase" class="management-btn">✏️ Update Phrase</button>
+</div>
+
+<div class="management-section">
+    <h4>Reorder Phrases</h4>
+    <select id="reorderCategorySelect">
+        <option value="food">Food & Drink</option>
+        <option value="feelings">Feelings</option>
+        <option value="selfcare">Self Care</option>
+        <option value="health">Health</option>
+        <option value="routine">Daily Routine</option>
+        <option value="social">Social Chat</option>
+        <option value="activities">Activities</option>
+        <option value="entertainment">Entertainment</option>
+        <option value="memories">Memories</option>
+        <option value="environment">Comfort</option>
+    </select>
+    <div class="reorder-container">
+        <ul id="phraseList" class="phrase-list">
+            <!-- Phrases will be populated here for reordering -->
+        </ul>
+    </div>
+    <button id="saveOrder" class="management-btn">💾 Save New Order</button>
+    <p class="help-text">Drag phrases up or down to reorder them</p>
+</div>
+
             <div class="management-section">
                 <h4>Quick Actions</h4>
                 <button id="showAllPhrases" class="management-btn">👁️ View All Phrases</button>
