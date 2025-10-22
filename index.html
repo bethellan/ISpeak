@@ -4,13 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyNewVoice - Communication Tool</title>
+    <meta name="theme-color" content="#0f766e">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <!-- Message Display Bar -->
+        <!-- Message Display Bar with Management Cog -->
         <div id="messageBar">
             <p>Select a button to speak...</p>
+            <button id="managementToggle" class="management-toggle" title="Manage Content">⚙️</button>
         </div>
         
         <!-- Tab Navigation -->
@@ -33,16 +36,26 @@
             <!-- Buttons will be loaded here by JavaScript -->
         </div>
 
-        <!-- Management Button (Hidden by default) -->
-        <button id="managementToggle" class="management-toggle">⚙️ Manage Content</button>
+        <!-- Password Prompt Modal - HIDDEN by default -->
+        <div id="passwordModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h3>Management Access</h3>
+                <p>Enter password to manage content:</p>
+                <input type="password" id="passwordInput" placeholder="Enter password..." class="management-input">
+                <div class="modal-actions">
+                    <button id="passwordSubmit" class="management-btn">Access</button>
+                    <button id="passwordCancel" class="management-btn close-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
 
-        <!-- Content Management Panel (Hidden by default) -->
+        <!-- Content Management Panel - HIDDEN by default -->
         <div id="managementPanel" class="management-panel" style="display: none;">
             <h3>Content Management</h3>
             
             <div class="management-section">
                 <h4>Export/Backup</h4>
-                <button onclick="exportButtonData()" class="management-btn">📥 Export All Data</button>
+                <button id="exportData" class="management-btn">📥 Export All Data</button>
                 <p class="help-text">Download a backup of all phrases and people</p>
             </div>
 
@@ -62,7 +75,7 @@
                 </select>
                 <input type="text" id="newPhraseText" placeholder="Enter phrase text..." class="management-input">
                 <input type="text" id="newPhraseImage" placeholder="Image filename (optional)" class="management-input">
-                <button onclick="addNewPhrase()" class="management-btn">➕ Add Phrase</button>
+                <button id="addPhrase" class="management-btn">➕ Add Phrase</button>
             </div>
 
             <div class="management-section">
@@ -82,16 +95,17 @@
                 <select id="removePhraseSelect" class="management-input">
                     <!-- Options will be populated by JavaScript -->
                 </select>
-                <button onclick="removeSelectedPhrase()" class="management-btn remove-btn">🗑️ Remove Selected Phrase</button>
+                <button id="removePhrase" class="management-btn remove-btn">🗑️ Remove Selected Phrase</button>
             </div>
 
             <div class="management-section">
                 <h4>Quick Actions</h4>
-                <button onclick="showAllPhrases()" class="management-btn">👁️ View All Phrases</button>
-                <button onclick="reloadApp()" class="management-btn">🔄 Reload App</button>
+                <button id="showAllPhrases" class="management-btn">👁️ View All Phrases</button>
+                <button id="reloadApp" class="management-btn">🔄 Reload App</button>
+                <button id="resetData" class="management-btn remove-btn">🔄 Reset to Default Data</button>
             </div>
 
-            <button onclick="hideManagementPanel()" class="management-btn close-btn">❌ Close Management</button>
+            <button id="closeManagement" class="management-btn close-btn">❌ Close Management</button>
         </div>
     </div>
     

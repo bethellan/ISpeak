@@ -1,5 +1,97 @@
-// Comprehensive button data structure for reliable image loading
-const buttonData = {
+// ============================================================================
+// DATA PERSISTENCE FUNCTIONS - SAVES DATA BETWEEN SESSIONS
+// ============================================================================
+
+const STORAGE_KEY = 'mynevoice_data';
+
+// Function to save all data to localStorage
+function saveDataToStorage() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(buttonData));
+        console.log('Data saved to localStorage');
+    } catch (error) {
+        console.error('Error saving data:', error);
+    }
+}
+
+// Function to load data from localStorage
+function loadDataFromStorage() {
+    try {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            // Merge saved data with default data structure
+            Object.keys(parsedData).forEach(category => {
+                if (buttonData[category]) {
+                    buttonData[category] = parsedData[category];
+                }
+            });
+            console.log('Data loaded from localStorage');
+        }
+    } catch (error) {
+        console.error('Error loading data:', error);
+    }
+}
+
+// Function to reset to default data
+function resetToDefaultData() {
+    if (confirm('Are you sure you want to reset all data to default? This cannot be undone.')) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload(); // Reload the page to use default data
+    }
+}
+
+// ============================================================================
+// PASSWORD PROTECTION - FIXED VERSION
+// ============================================================================
+
+const MANAGEMENT_PASSWORD = "19Hector";
+
+function showPasswordModal() {
+    console.log('Showing password modal');
+    document.getElementById('passwordModal').style.display = 'flex';
+    document.getElementById('passwordInput').value = '';
+    document.getElementById('passwordInput').focus();
+}
+
+function hidePasswordModal() {
+    console.log('Hiding password modal');
+    document.getElementById('passwordModal').style.display = 'none';
+    document.getElementById('passwordInput').value = '';
+}
+
+function checkPassword() {
+    const input = document.getElementById('passwordInput').value;
+    console.log('Password check:', input);
+    
+    if (input === MANAGEMENT_PASSWORD) {
+        console.log('Password correct');
+        hidePasswordModal();
+        showManagementPanel();
+    } else {
+        alert('Incorrect password. Please try again.');
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+function showManagementPanel() {
+    const panel = document.getElementById('managementPanel');
+    console.log('Showing management panel');
+    panel.style.display = 'block';
+    populateRemovePhraseOptions();
+}
+
+function hideManagementPanel() {
+    console.log('Hiding management panel');
+    document.getElementById('managementPanel').style.display = 'none';
+}
+
+// ============================================================================
+// BUTTON DATA STRUCTURE WITH PERSISTENCE
+// ============================================================================
+
+const defaultButtonData = {
     food: [
         { text: "I'm hungry", image: "hungry.jpg" },
         { text: "I'm thirsty", image: "thirsty.jpg" },
@@ -215,366 +307,8 @@ const buttonData = {
     ]
 };
 
-// ============================================================================
-// BIRTHDAY COUNTDOWN FUNCTIONS
-// ============================================================================
-
-// Enhanced function to calculate detailed birthday countdown
-function getBirthdayCountdown(birthday) {
-    if (!birthday) return "";
-    
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const nextBirthday = new Date(currentYear + '-' + birthday.substring(5));
-    
-    // If birthday already passed this year, use next year
-    if (nextBirthday < today) {
-        nextBirthday.setFullYear(currentYear + 1);
-    }
-    
-    const diffTime = nextBirthday - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Calculate months, weeks, and days
-    const months = Math.floor(diffDays / 30);
-    const remainingDaysAfterMonths = diffDays % 30;
-    const weeks = Math.floor(remainingDaysAfterMonths / 7);
-    const days = remainingDaysAfterMonths % 7;
-    
-    // Special cases
-    if (diffDays === 0) return "Today! 🎉";
-    if (diffDays === 1) return "Tomorrow!";
-    
-    // Build detailed countdown string
-    let countdownParts = [];
-    if (months > 0) {
-        countdownParts.push(`${months} month${months > 1 ? 's' : ''}`);
-    }
-    if (weeks > 0) {
-        countdownParts.push(`${weeks} week${weeks > 1 ? 's' : ''}`);
-    }
-    if (days > 0) {
-        countdownParts.push(`${days} day${days > 1 ? 's' : ''}`);
-    }
-    
-    // Handle very near birthdays
-    if (diffDays <= 7) {
-        return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
-    }
-    
-    return countdownParts.join(', ');
-}
-
-// Additional function to get spoken countdown (simpler version for speech)
-function getSpokenCountdown(birthday) {
-    if (!birthday) return "";
-    
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const nextBirthday = new Date(currentYear + '-' + birthday.substring(5));
-    
-    if (nextBirthday < today) {
-        nextBirthday.setFullYear(currentYear + 1);
-    }
-    
-    const diffTime = nextBirthday - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return "today";
-    if (diffDays === 1) return "tomorrow";
-    
-    if (diffDays <= 7) {
-        return `in ${diffDays} days`;
-    }
-    
-    const months = Math.floor(diffDays / 30);
-    const weeks = Math.floor((diffDays % 30) / 7);
-    
-    if (months > 0 && weeks > 0) {
-        return `in ${months} month${months > 1 ? 's' : ''} and ${weeks} week${weeks > 1 ? 's' : ''}`;
-    } else if (months > 0) {
-        return `in ${months} month${months > 1 ? 's' : ''}`;
-    } else {
-        return `in ${weeks} week${weeks > 1 ? 's' : ''}`;
-    }
-}
-
-// ============================================================================
-// PERSON PROFILE MODAL FUNCTIONS
-// ============================================================================
-
-// Function to create and speak natural person introductions
-function speakPersonIntroduction(personName) {
-    const person = buttonData.MyPeople.find(p => p.text === personName);
-    if (!person) return;
-
-    let introduction = "";
-    
-    // Use the detailed intro if provided
-    if (person.detailedIntro) {
-        introduction = person.detailedIntro;
-    } else {
-        // Build introduction from individual fields
-        introduction = `This is ${person.text}`;
-        
-        if (person.relationship) {
-            introduction += `, ${person.relationship}`;
-        }
-        
-        if (person.occupation) {
-            introduction += `. ${person.occupation}`;
-        }
-        
-        if (person.location) {
-            introduction += `. ${person.location}`;
-        }
-        
-        if (person.family) {
-            introduction += `. ${person.family}`;
-        }
-        
-        if (person.additionalInfo) {
-            introduction += `. ${person.additionalInfo}`;
-        }
-    }
-
-    // Add birthday information if it's coming up
-    if (person.birthday) {
-        const spokenCountdown = getSpokenCountdown(person.birthday);
-        if (spokenCountdown && spokenCountdown !== "in 0 days") {
-            introduction += `. ${person.text}'s birthday is ${spokenCountdown}`;
-        }
-    }
-
-    speakText(introduction);
-}
-
-// Helper function to format birthday date
-function formatBirthday(birthday) {
-    if (!birthday) return "";
-    const date = new Date(birthday);
-    return date.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    });
-}
-
-// Function to load additional photos for a person
-function loadAdditionalPhotos(person) {
-    const photoGrid = document.getElementById(`additionalPhotos-${person.text.replace(/\s+/g, '')}`);
-    if (!photoGrid) return;
-    
-    // Clear placeholder
-    photoGrid.innerHTML = '';
-    
-    // Example: Try to load 3 additional photos
-    const additionalPhotos = [
-        `${person.text.toLowerCase()}_1.jpg`,
-        `${person.text.toLowerCase()}_2.jpg`, 
-        `${person.text.toLowerCase()}_3.jpg`
-    ];
-    
-    let photosLoaded = 0;
-    
-    additionalPhotos.forEach(photoName => {
-        const img = document.createElement('img');
-        img.src = `images/MyPeople/extra/${photoName}`;
-        img.alt = `${person.text} - additional photo`;
-        img.className = 'additional-photo';
-        img.onerror = function() {
-            this.style.display = 'none';
-        };
-        img.onload = function() {
-            photosLoaded++;
-        };
-        photoGrid.appendChild(img);
-    });
-    
-    // If no additional photos loaded, show message
-    setTimeout(() => {
-        if (photosLoaded === 0) {
-            photoGrid.innerHTML = `
-                <div class="photo-placeholder">
-                    <span>More photos coming soon...</span>
-                </div>
-            `;
-        }
-    }, 1000);
-}
-
-// Function to create the person profile modal
-function createPersonProfile(person) {
-    const modal = document.createElement('div');
-    modal.className = 'person-modal';
-    modal.innerHTML = `
-        <div class="person-profile">
-            <button class="close-profile">&times;</button>
-            <div class="profile-header">
-                <img src="images/MyPeople/${person.image}" alt="${person.text}" class="profile-image">
-                <div class="profile-info">
-                    <h2>${person.text}</h2>
-                    <p class="relationship">${person.relationship}</p>
-                    ${person.occupation ? `<p class="occupation">${person.occupation}</p>` : ''}
-                </div>
-            </div>
-            
-            <div class="profile-details">
-                ${person.location ? `
-                    <div class="detail-item">
-                        <span class="detail-label">📍 Location:</span>
-                        <span class="detail-value">${person.location}</span>
-                    </div>
-                ` : ''}
-                
-                ${person.birthday ? `
-                    <div class="detail-item">
-                        <span class="detail-label">🎂 Birthday:</span>
-                        <span class="detail-value">${formatBirthday(person.birthday)}</span>
-                    </div>
-                    <div class="detail-item">
-                        <span class="detail-label">⏰ Countdown:</span>
-                        <span class="detail-value countdown-badge">${getBirthdayCountdown(person.birthday)}</span>
-                    </div>
-                ` : ''}
-                
-                ${person.phone ? `
-                    <div class="detail-item">
-                        <span class="detail-label">📞 Phone:</span>
-                        <span class="detail-value">${person.phone}</span>
-                    </div>
-                ` : ''}
-                
-                ${person.family ? `
-                    <div class="detail-item">
-                        <span class="detail-label">👨‍👩‍👧‍👦 Family:</span>
-                        <span class="detail-value">${person.family}</span>
-                    </div>
-                ` : ''}
-                
-                ${person.hobbies ? `
-                    <div class="detail-item">
-                        <span class="detail-label">🎯 Hobbies:</span>
-                        <span class="detail-value">${person.hobbies}</span>
-                    </div>
-                ` : ''}
-                
-                ${person.additionalInfo ? `
-                    <div class="detail-item">
-                        <span class="detail-label">💫 More Info:</span>
-                        <span class="detail-value">${person.additionalInfo}</span>
-                    </div>
-                ` : ''}
-            </div>
-            
-            <!-- Additional Photos Section -->
-            <div class="additional-photos">
-                <h3>More Photos</h3>
-                <div class="photo-grid" id="additionalPhotos-${person.text.replace(/\s+/g, '')}">
-                    <div class="photo-placeholder">
-                        <span>More photos coming soon...</span>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Updated Quick Action Buttons -->
-            <div class="profile-actions">
-                <button class="action-btn speak-btn" onclick="speakPersonIntroduction('${person.text}')">
-                    🔊 Introduce
-                </button>
-                <button class="action-btn call-btn" onclick="speakText('I would like to call ${person.text}', this)">
-                    📞 Call
-                </button>
-                <button class="action-btn message-btn" onclick="speakText('I want to send a message to ${person.text}', this)">
-                    💬 Message
-                </button>
-            </div>
-        </div>
-    `;
-    
-    // Add event listener to close button
-    modal.querySelector('.close-profile').addEventListener('click', function() {
-        document.body.removeChild(modal);
-    });
-    
-    // Close modal when clicking outside
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            document.body.removeChild(modal);
-        }
-    });
-    
-    // Close modal with Escape key
-    document.addEventListener('keydown', function closeOnEscape(e) {
-        if (e.key === 'Escape') {
-            document.body.removeChild(modal);
-            document.removeEventListener('keydown', closeOnEscape);
-        }
-    });
-    
-    // Load additional photos if available
-    loadAdditionalPhotos(person);
-    
-    return modal;
-}
-
-// ============================================================================
-// CONTENT MANAGEMENT TOOLS (NEW - For easier editing)
-// ============================================================================
-
-// Function to export current button data for backup/editing
-function exportButtonData() {
-    const dataStr = JSON.stringify(buttonData, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = 'mynevoice_data_backup.json';
-    link.click();
-}
-
-// Function to add a new phrase to a category
-function addPhraseToCategory(category, text, image) {
-    if (!buttonData[category]) {
-        buttonData[category] = [];
-    }
-    
-    buttonData[category].push({
-        text: text,
-        image: image || 'default.jpg'
-    });
-    
-    // Refresh the current grid if we're viewing that category
-    const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
-    if (activeCategory === category) {
-        populateGrid(category);
-    }
-}
-
-// Function to remove a phrase from a category
-function removePhraseFromCategory(category, text) {
-    if (buttonData[category]) {
-        buttonData[category] = buttonData[category].filter(item => item.text !== text);
-        
-        // Refresh the current grid if we're viewing that category
-        const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
-        if (activeCategory === category) {
-            populateGrid(category);
-        }
-    }
-}
-
-// Function to add a new person
-function addPerson(personData) {
-    buttonData.MyPeople.push(personData);
-    
-    // Refresh if we're viewing My People
-    const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
-    if (activeCategory === 'MyPeople') {
-        populateGrid('MyPeople');
-    }
-}
+// Initialize buttonData with saved data or defaults
+let buttonData = JSON.parse(JSON.stringify(defaultButtonData)); // Deep copy
 
 // ============================================================================
 // MAIN APP FUNCTIONS
@@ -685,30 +419,355 @@ function speakText(text, buttonElement) {
 }
 
 // ============================================================================
-// CONTENT MANAGEMENT TOOLS (VISUAL INTERFACE)
+// BIRTHDAY COUNTDOWN FUNCTIONS
 // ============================================================================
 
-// Toggle management panel visibility
-function toggleManagementPanel() {
-    const panel = document.getElementById('managementPanel');
-    const toggleBtn = document.getElementById('managementToggle');
+function getBirthdayCountdown(birthday) {
+    if (!birthday) return "";
     
-    if (panel.style.display === 'none') {
-        panel.style.display = 'block';
-        toggleBtn.textContent = '❌ Close Management';
-        populateRemovePhraseOptions();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const currentYear = today.getFullYear();
+    
+    const birthDate = new Date(birthday);
+    const nextBirthday = new Date(currentYear, birthDate.getMonth(), birthDate.getDate());
+    
+    if (nextBirthday < today) {
+        nextBirthday.setFullYear(currentYear + 1);
+    }
+    
+    const diffTime = nextBirthday - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) return "Today! 🎉";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays === 2) return "2 days";
+    
+    const months = Math.floor(diffDays / 30);
+    const remainingDaysAfterMonths = diffDays % 30;
+    const weeks = Math.floor(remainingDaysAfterMonths / 7);
+    const days = remainingDaysAfterMonths % 7;
+    
+    if (diffDays <= 7) {
+        return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    } else if (diffDays <= 14) {
+        return `1 week${weeks > 1 ? 's' : ''}`;
+    } else if (diffDays <= 30) {
+        return `${weeks} week${weeks > 1 ? 's' : ''}`;
     } else {
-        panel.style.display = 'none';
-        toggleBtn.textContent = '⚙️ Manage Content';
+        if (months > 0 && weeks > 0) {
+            return `${months} month${months > 1 ? 's' : ''} and ${weeks} week${weeks > 1 ? 's' : ''}`;
+        } else {
+            return `${months} month${months > 1 ? 's' : ''}`;
+        }
     }
 }
 
-function hideManagementPanel() {
-    document.getElementById('managementPanel').style.display = 'none';
-    document.getElementById('managementToggle').textContent = '⚙️ Manage Content';
+function getSpokenBirthdayAnnouncement(birthday) {
+    if (!birthday) return "";
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const currentYear = today.getFullYear();
+    
+    const birthDate = new Date(birthday);
+    const nextBirthday = new Date(currentYear, birthDate.getMonth(), birthDate.getDate());
+    
+    if (nextBirthday < today) {
+        nextBirthday.setFullYear(currentYear + 1);
+    }
+    
+    const diffTime = nextBirthday - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    const options = { month: 'long', day: 'numeric' };
+    const formattedDate = nextBirthday.toLocaleDateString('en-US', options);
+    
+    const day = nextBirthday.getDate();
+    let suffix = 'th';
+    if (day === 1 || day === 21 || day === 31) suffix = 'st';
+    else if (day === 2 || day === 22) suffix = 'nd';
+    else if (day === 3 || day === 23) suffix = 'rd';
+    
+    const dateWithSuffix = formattedDate.replace(day, day + suffix);
+    
+    if (diffDays === 0) {
+        return `which is today! Happy birthday!`;
+    } else if (diffDays === 1) {
+        return `which is tomorrow`;
+    } else if (diffDays <= 7) {
+        return `which is in ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+    } else if (diffDays <= 14) {
+        return `which is in 1 week`;
+    } else if (diffDays <= 30) {
+        const weeks = Math.floor(diffDays / 7);
+        return `which is in ${weeks} week${weeks > 1 ? 's' : ''}`;
+    } else {
+        const months = Math.floor(diffDays / 30);
+        const remainingWeeks = Math.floor((diffDays % 30) / 7);
+        
+        if (months > 0 && remainingWeeks > 0) {
+            return `which is in ${months} month${months > 1 ? 's' : ''} and ${remainingWeeks} week${remainingWeeks > 1 ? 's' : ''}`;
+        } else {
+            return `which is in ${months} month${months > 1 ? 's' : ''}`;
+        }
+    }
 }
 
-// Populate the remove phrase dropdown
+// ============================================================================
+// PERSON PROFILE MODAL FUNCTIONS
+// ============================================================================
+
+function speakPersonIntroduction(personName) {
+    const person = buttonData.MyPeople.find(p => p.text === personName);
+    if (!person) return;
+
+    let introduction = "";
+    
+    if (person.detailedIntro) {
+        introduction = person.detailedIntro;
+    } else {
+        introduction = `This is ${person.text}`;
+        
+        if (person.relationship) {
+            introduction += `, ${person.relationship}`;
+        }
+        
+        if (person.occupation) {
+            introduction += `. ${person.occupation}`;
+        }
+        
+        if (person.location) {
+            introduction += `. ${person.location}`;
+        }
+        
+        if (person.family) {
+            introduction += `. ${person.family}`;
+        }
+        
+        if (person.additionalInfo) {
+            introduction += `. ${person.additionalInfo}`;
+        }
+    }
+
+    if (person.birthday) {
+        const birthDate = new Date(person.birthday);
+        const options = { month: 'long', day: 'numeric' };
+        const formattedDate = birthDate.toLocaleDateString('en-US', options);
+        
+        const day = birthDate.getDate();
+        let suffix = 'th';
+        if (day === 1 || day === 21 || day === 31) suffix = 'st';
+        else if (day === 2 || day === 22) suffix = 'nd';
+        else if (day === 3 || day === 23) suffix = 'rd';
+        
+        const dateWithSuffix = formattedDate.replace(day.toString(), day + suffix);
+        const countdownPhrase = getSpokenBirthdayAnnouncement(person.birthday);
+        
+        introduction += `. ${person.text}'s birthday is on ${dateWithSuffix}, ${countdownPhrase}`;
+    }
+
+    speakText(introduction);
+}
+
+function formatBirthday(birthday) {
+    if (!birthday) return "";
+    const date = new Date(birthday);
+    return date.toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+function loadAdditionalPhotos(person) {
+    const photoGrid = document.getElementById(`additionalPhotos-${person.text.replace(/\s+/g, '')}`);
+    if (!photoGrid) return;
+    
+    photoGrid.innerHTML = '';
+    
+    if (person.additionalPhotos && person.additionalPhotos.length > 0) {
+        person.additionalPhotos.forEach(photoName => {
+            const img = document.createElement('img');
+            img.src = `images/MyPeople/extra/${photoName}`;
+            img.alt = `${person.text} - ${photoName.replace('.jpg', '').replace(/_/g, ' ')}`;
+            img.className = 'additional-photo';
+            img.onerror = function() {
+                this.style.display = 'none';
+            };
+            img.onload = function() {
+                console.log(`Loaded: ${photoName}`);
+            };
+            
+            img.addEventListener('click', function() {
+                enlargePhoto(this.src, this.alt);
+            });
+            
+            photoGrid.appendChild(img);
+        });
+    } else {
+        const defaultPhotos = [
+            `${person.text.toLowerCase()}_1.jpg`,
+            `${person.text.toLowerCase()}_2.jpg`, 
+            `${person.text.toLowerCase()}_3.jpg`
+        ];
+        
+        defaultPhotos.forEach(photoName => {
+            const img = document.createElement('img');
+            img.src = `images/MyPeople/extra/${photoName}`;
+            img.alt = `${person.text} - additional photo`;
+            img.className = 'additional-photo';
+            img.onerror = function() {
+                this.style.display = 'none';
+            };
+            photoGrid.appendChild(img);
+        });
+    }
+    
+    setTimeout(() => {
+        if (photoGrid.children.length === 0) {
+            photoGrid.innerHTML = `
+                <div class="photo-placeholder">
+                    <span>More photos coming soon...</span>
+                </div>
+            `;
+        }
+    }, 2000);
+}
+
+function createPersonProfile(person) {
+    const modal = document.createElement('div');
+    modal.className = 'person-modal';
+    modal.innerHTML = `
+        <div class="person-profile">
+            <button class="close-profile">&times;</button>
+            <div class="profile-header">
+                <img src="images/MyPeople/${person.image}" alt="${person.text}" class="profile-image">
+                <div class="profile-info">
+                    <h2>${person.text}</h2>
+                    <p class="relationship">${person.relationship}</p>
+                    ${person.occupation ? `<p class="occupation">${person.occupation}</p>` : ''}
+                </div>
+            </div>
+            
+            <div class="profile-details">
+                ${person.location ? `
+                    <div class="detail-item">
+                        <span class="detail-label">📍 Location:</span>
+                        <span class="detail-value">${person.location}</span>
+                    </div>
+                ` : ''}
+                
+                ${person.birthday ? `
+                    <div class="detail-item">
+                        <span class="detail-label">🎂 Birthday:</span>
+                        <span class="detail-value">${formatBirthday(person.birthday)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">⏰ Countdown:</span>
+                        <span class="detail-value countdown-badge">${getBirthdayCountdown(person.birthday)}</span>
+                    </div>
+                ` : ''}
+                
+                ${person.phone ? `
+                    <div class="detail-item">
+                        <span class="detail-label">📞 Phone:</span>
+                        <span class="detail-value">${person.phone}</span>
+                    </div>
+                ` : ''}
+                
+                ${person.family ? `
+                    <div class="detail-item">
+                        <span class="detail-label">👨‍👩‍👧‍👦 Family:</span>
+                        <span class="detail-value">${person.family}</span>
+                    </div>
+                ` : ''}
+                
+                ${person.hobbies ? `
+                    <div class="detail-item">
+                        <span class="detail-label">🎯 Hobbies:</span>
+                        <span class="detail-value">${person.hobbies}</span>
+                    </div>
+                ` : ''}
+                
+                ${person.additionalInfo ? `
+                    <div class="detail-item">
+                        <span class="detail-label">💫 More Info:</span>
+                        <span class="detail-value">${person.additionalInfo}</span>
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="additional-photos">
+                <h3>More Photos</h3>
+                <div class="photo-grid" id="additionalPhotos-${person.text.replace(/\s+/g, '')}">
+                    <div class="photo-placeholder">
+                        <span>Loading photos...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-actions">
+                <button class="action-btn speak-btn" onclick="speakPersonIntroduction('${person.text}')">
+                    🔊 Introduce
+                </button>
+                <button class="action-btn call-btn" onclick="speakText('I would like to call ${person.text}', this)">
+                    📞 Call
+                </button>
+                <button class="action-btn message-btn" onclick="speakText('I want to send a message to ${person.text}', this)">
+                    💬 Message
+                </button>
+            </div>
+        </div>
+    `;
+    
+    modal.querySelector('.close-profile').addEventListener('click', function() {
+        document.body.removeChild(modal);
+    });
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    document.addEventListener('keydown', function closeOnEscape(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', closeOnEscape);
+        }
+    });
+    
+    loadAdditionalPhotos(person);
+    
+    return modal;
+}
+
+function enlargePhoto(src, alt) {
+    const overlay = document.createElement('div');
+    overlay.className = 'photo-overlay';
+    overlay.innerHTML = `
+        <div class="enlarged-photo-container">
+            <button class="close-enlarged">&times;</button>
+            <img src="${src}" alt="${alt}" class="enlarged-photo">
+            <p class="photo-caption">${alt}</p>
+        </div>
+    `;
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay || e.target.classList.contains('close-enlarged')) {
+            document.body.removeChild(overlay);
+        }
+    });
+    
+    document.body.appendChild(overlay);
+}
+
+// ============================================================================
+// CONTENT MANAGEMENT FUNCTIONS WITH PERSISTENCE
+// ============================================================================
+
 function populateRemovePhraseOptions() {
     const categorySelect = document.getElementById('removeCategorySelect');
     const phraseSelect = document.getElementById('removePhraseSelect');
@@ -726,25 +785,6 @@ function populateRemovePhraseOptions() {
     }
 }
 
-// Update remove phrase options when category changes
-document.addEventListener('DOMContentLoaded', function() {
-    // Add management toggle button functionality
-    const toggleBtn = document.getElementById('managementToggle');
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', toggleManagementPanel);
-    }
-    
-    // Update remove phrase options when category changes
-    const removeCategorySelect = document.getElementById('removeCategorySelect');
-    if (removeCategorySelect) {
-        removeCategorySelect.addEventListener('change', populateRemovePhraseOptions);
-    }
-    
-    // Initial population of remove phrase options
-    setTimeout(populateRemovePhraseOptions, 100);
-});
-
-// Add new phrase using visual interface
 function addNewPhrase() {
     const category = document.getElementById('addCategorySelect').value;
     const text = document.getElementById('newPhraseText').value.trim();
@@ -755,13 +795,24 @@ function addNewPhrase() {
         return;
     }
     
+    if (!buttonData[category]) {
+        buttonData[category] = [];
+    }
+    
     // Check if phrase already exists
-    if (buttonData[category] && buttonData[category].some(p => p.text === text)) {
+    if (buttonData[category].some(p => p.text === text)) {
         alert('This phrase already exists in the selected category');
         return;
     }
     
-    addPhraseToCategory(category, text, image);
+    // Add the new phrase
+    buttonData[category].push({
+        text: text,
+        image: image
+    });
+    
+    // Save to localStorage
+    saveDataToStorage();
     
     // Clear inputs
     document.getElementById('newPhraseText').value = '';
@@ -770,10 +821,15 @@ function addNewPhrase() {
     // Update remove phrase options
     populateRemovePhraseOptions();
     
+    // Refresh the current grid if we're viewing that category
+    const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
+    if (activeCategory === category) {
+        populateGrid(category);
+    }
+    
     alert(`Added "${text}" to ${category}`);
 }
 
-// Remove selected phrase
 function removeSelectedPhrase() {
     const category = document.getElementById('removeCategorySelect').value;
     const phraseSelect = document.getElementById('removePhraseSelect');
@@ -785,13 +841,25 @@ function removeSelectedPhrase() {
     }
     
     if (confirm(`Are you sure you want to remove "${text}" from ${category}?`)) {
-        removePhraseFromCategory(category, text);
+        // Remove the phrase
+        buttonData[category] = buttonData[category].filter(item => item.text !== text);
+        
+        // Save to localStorage
+        saveDataToStorage();
+        
+        // Update remove phrase options
         populateRemovePhraseOptions();
+        
+        // Refresh the current grid if we're viewing that category
+        const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
+        if (activeCategory === category) {
+            populateGrid(category);
+        }
+        
         alert(`Removed "${text}" from ${category}`);
     }
 }
 
-// Show all phrases in console (for debugging)
 function showAllPhrases() {
     console.log('=== ALL PHRASES ===');
     Object.keys(buttonData).forEach(category => {
@@ -805,7 +873,6 @@ function showAllPhrases() {
     alert('Check browser console (F12) to see all phrases');
 }
 
-// Reload the app
 function reloadApp() {
     const activeCategory = document.querySelector('.tab.active').getAttribute('data-category');
     populateGrid(activeCategory);
@@ -813,7 +880,6 @@ function reloadApp() {
     alert('App reloaded!');
 }
 
-// Enhanced export function with better feedback
 function exportButtonData() {
     const dataStr = JSON.stringify(buttonData, null, 2);
     const dataBlob = new Blob([dataStr], {type: 'application/json'});
@@ -828,15 +894,16 @@ function exportButtonData() {
     alert('Data exported! File: mynevoice_data_backup.json');
 }
 
-
-
-
 // ============================================================================
-// INITIALIZATION
+// INITIALIZATION - FIXED EVENT LISTENERS
 // ============================================================================
 
-// Initialize the app when the page loads
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('MyNewVoice app initializing...');
+    
+    // Load saved data first
+    loadDataFromStorage();
+    
     // Load the first category by default
     populateGrid('food');
     
@@ -852,17 +919,90 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Set up management toggle button - FIXED
+    const toggleBtn = document.getElementById('managementToggle');
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            console.log('Cog button clicked - showing password modal');
+            showPasswordModal();
+        });
+    }
+    
+    // Set up password modal buttons
+    const passwordSubmit = document.getElementById('passwordSubmit');
+    if (passwordSubmit) {
+        passwordSubmit.addEventListener('click', checkPassword);
+    }
+    
+    const passwordCancel = document.getElementById('passwordCancel');
+    if (passwordCancel) {
+        passwordCancel.addEventListener('click', hidePasswordModal);
+    }
+    
+    // Set up management panel buttons
+    const closeManagement = document.getElementById('closeManagement');
+    if (closeManagement) {
+        closeManagement.addEventListener('click', hideManagementPanel);
+    }
+    
+    const addPhrase = document.getElementById('addPhrase');
+    if (addPhrase) {
+        addPhrase.addEventListener('click', addNewPhrase);
+    }
+    
+    const removePhrase = document.getElementById('removePhrase');
+    if (removePhrase) {
+        removePhrase.addEventListener('click', removeSelectedPhrase);
+    }
+    
+    const exportData = document.getElementById('exportData');
+    if (exportData) {
+        exportData.addEventListener('click', exportButtonData);
+    }
+    
+    const showAllPhrasesBtn = document.getElementById('showAllPhrases');
+    if (showAllPhrasesBtn) {
+        showAllPhrasesBtn.addEventListener('click', showAllPhrases);
+    }
+    
+    const reloadAppBtn = document.getElementById('reloadApp');
+    if (reloadAppBtn) {
+        reloadAppBtn.addEventListener('click', reloadApp);
+    }
+    
+    const resetData = document.getElementById('resetData');
+    if (resetData) {
+        resetData.addEventListener('click', resetToDefaultData);
+    }
+    
+    // Update remove phrase options when category changes
+    const removeCategorySelect = document.getElementById('removeCategorySelect');
+    if (removeCategorySelect) {
+        removeCategorySelect.addEventListener('change', populateRemovePhraseOptions);
+    }
+    
+    // Initial population of remove phrase options
+    setTimeout(populateRemovePhraseOptions, 100);
+    
     // Add developer tools to console for easier content management
     console.log('MyNewVoice Developer Tools Available:');
     console.log('- exportButtonData(): Export all data as JSON');
     console.log('- addPhraseToCategory(category, text, image): Add new phrase');
     console.log('- removePhraseFromCategory(category, text): Remove phrase');
     console.log('- addPerson(personData): Add new person');
+    
+    console.log('App initialization complete!');
 });
 
-// Helper function for testing different date scenarios (optional)
-function getDateInDays(daysFromNow) {
-    const date = new Date();
-    date.setDate(date.getDate() + daysFromNow);
-    return date.toISOString().split('T')[0]; // Returns YYYY-MM-DD format
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js')
+            .then(function(registration) {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(function(error) {
+                console.log('ServiceWorker registration failed: ', error);
+            });
+    });
 }
