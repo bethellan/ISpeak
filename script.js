@@ -209,9 +209,9 @@ const defaultButtonData = {
             location: "Lives in Seatoun",
             birthday: "1948-05-21",
             phone: "027-356-9667",
-            detailedIntro: "This is Sue, my wonderful wife. She's retired and we lives in Seatoun. She's the most caring person I know.",
+            detailedIntro: "This is Sue, my wonderful wife. She's retired, lives in our home in Seatoun, and She's the most caring person I know.",
             family: "We have three children together",
-            hobbies: "She loves cricket and rugby",
+            hobbies: "She loves to socialise",
             additionalInfo: "We've been married for 45 wonderful years"
         },
         { 
@@ -235,10 +235,10 @@ const defaultButtonData = {
             location: "Lives in Sweden",
             birthday: "1976-01-07",
             phone: "",
-            detailedIntro: "This is Malcolm, my son. He's a Social Worker and lives in Sweden with his family. He's married to Tess and they have two children, Loke and Leon.",
+            detailedIntro: "This is Malcolm, my son. He's a Social Worker and lives in Sweden with his family. He's married to Tess and they have two children, Loke and Leon.  I think he might be gay.",
             family: "Married to Tess, father of Loke and Leon",
-            hobbies: "He enjoys boy bands and hairy men",
-            additionalInfo: "I think he might be gay!"
+            hobbies: "He enjoys listening to boy bands and watching them twirk",
+            additionalInfo: "Did i say already that I think he might be gay!"
         },
         { 
             text: "Tess", 
@@ -251,7 +251,7 @@ const defaultButtonData = {
             detailedIntro: "This is Tess, my daughter-in-law. She's a Computer Specialist and lives in Sweden with Malcolm and their children. She's very talented with technology.",
             family: "Married to Malcolm, mother of Loke and Leon",
             hobbies: "She loves coding and solving technical problems",
-            additionalInfo: "She always helps me with my computer problems"
+            additionalInfo: "Don't let on that her husband is gay"
         },
         { 
             text: "Loke", 
