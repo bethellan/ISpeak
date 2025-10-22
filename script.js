@@ -88,6 +88,44 @@ function hideManagementPanel() {
 }
 
 // ============================================================================
+// MANAGEMENT TOGGLE VISIBILITY FIX - ENHANCED VERSION
+// ============================================================================
+
+function ensureManagementToggle() {
+    let toggleBtn = document.getElementById('managementToggle');
+    
+    // If button doesn't exist, recreate it (in case it was removed)
+    if (!toggleBtn) {
+        console.log('Recreating missing management toggle button');
+        toggleBtn = document.createElement('button');
+        toggleBtn.id = 'managementToggle';
+        toggleBtn.className = 'management-toggle';
+        toggleBtn.innerHTML = '⚙️';
+        toggleBtn.setAttribute('aria-label', 'Management settings');
+        
+        // Add click event
+        toggleBtn.addEventListener('click', function() {
+            console.log('Recreated cog button clicked - showing password modal');
+            showPasswordModal();
+        });
+        
+        // Add to DOM
+        document.body.appendChild(toggleBtn);
+    }
+    
+    // Always ensure it's visible and on top
+    toggleBtn.style.display = 'flex';
+    toggleBtn.style.visibility = 'visible';
+    toggleBtn.style.opacity = '1';
+    toggleBtn.style.zIndex = '10000'; // Very high z-index to stay above modals
+    toggleBtn.style.position = 'fixed';
+    toggleBtn.style.top = '20px';
+    toggleBtn.style.right = '20px';
+    
+    console.log('Management toggle ensured - z-index:', toggleBtn.style.zIndex);
+}
+
+// ============================================================================
 // BUTTON DATA STRUCTURE WITH PERSISTENCE
 // ============================================================================
 
@@ -722,24 +760,39 @@ function createPersonProfile(person) {
         </div>
     `;
     
+    // Ensure cog is visible before showing modal
+    ensureManagementToggle();
+    
     modal.querySelector('.close-profile').addEventListener('click', function() {
         document.body.removeChild(modal);
+        // Ensure cog is visible after closing modal
+        setTimeout(ensureManagementToggle, 100);
     });
     
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
             document.body.removeChild(modal);
+            // Ensure cog is visible after closing modal
+            setTimeout(ensureManagementToggle, 100);
         }
     });
     
     document.addEventListener('keydown', function closeOnEscape(e) {
         if (e.key === 'Escape') {
-            document.body.removeChild(modal);
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+                // Ensure cog is visible after closing modal
+                setTimeout(ensureManagementToggle, 100);
+            }
             document.removeEventListener('keydown', closeOnEscape);
         }
     });
     
     loadAdditionalPhotos(person);
+    
+    // Add modal to DOM and ensure cog stays on top
+    document.body.appendChild(modal);
+    ensureManagementToggle();
     
     return modal;
 }
@@ -1204,6 +1257,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+
+// Ensure management toggle stays visible
+setTimeout(ensureManagementToggle, 100);
+window.addEventListener('load', ensureManagementToggle);
+window.addEventListener('resize', ensureManagementToggle);
+window.addEventListener('scroll', ensureManagementToggle);
+
     // Set up management toggle button - FIXED
     const toggleBtn = document.getElementById('managementToggle');
     if (toggleBtn) {
