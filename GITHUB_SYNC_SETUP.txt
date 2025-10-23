@@ -1,0 +1,2 @@
+Open ⚙️ → Enter password 19Hector → Set GitHub Token → Add/edit phrases.
+Saves to data/mynevoice_data.json in bethellan/ISpeak.
