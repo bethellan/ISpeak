@@ -1,6 +1,6 @@
 {
-  "name": "ISpeak \u2013 MyNewVoice",
-  "short_name": "ISpeak",
+  "name": "MyNewVoice",
+  "short_name": "MyNewVoice",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -1,118 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>ISpeak – MyNewVoice</title>
-  <meta name="theme-color" content="#0f766e">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyNewVoice - Communication Tool</title>
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <div id="messageBar">
-      <p>Select a button to speak…</p>
-      <button id="managementToggle" class="management-toggle" title="Manage Content">⚙️</button>
-    </div>
-
-    <div class="tab-container">
-      <button class="tab active" data-category="food">🍽️ Food & Drink</button>
-      <button class="tab" data-category="feelings">💬 Feelings</button>
-      <button class="tab" data-category="selfcare">🧼 Self Care</button>
-      <button class="tab" data-category="health">🏥 Health</button>
-      <button class="tab" data-category="routine">🗓️ Daily Routine</button>
-      <button class="tab" data-category="MyPeople">👨‍👩‍👧‍👦 My People</button>
-      <button class="tab" data-category="social">🗣️ Social Chat</button>
-      <button class="tab" data-category="activities">🎯 Activities</button>
-      <button class="tab" data-category="entertainment">🎵 Entertainment</button>
-      <button class="tab" data-category="memories">📸 Memories</button>
-      <button class="tab" data-category="environment">🏡 Comfort</button>
-    </div>
-
-    <div class="grid" id="buttonGrid"></div>
-
-    <div id="passwordModal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <h3>Management Access</h3>
-        <p>Enter password to manage content:</p>
-        <input type="password" id="passwordInput" class="management-input" placeholder="Enter password…">
-        <div class="modal-actions">
-          <button id="passwordSubmit" class="management-btn">Access</button>
-          <button id="passwordCancel" class="management-btn close-btn">Cancel</button>
+    <div class="container">
+        <!-- Message Display Bar -->
+        <div id="messageBar">
+            <p>Select a button to speak...</p>
         </div>
-      </div>
-    </div>
-
-    <div id="tokenModal" class="modal" style="display:none;">
-      <div class="modal-content">
-        <h3>GitHub Token</h3>
-        <p>Paste your token (session only):</p>
-        <input type="password" id="tokenInput" class="management-input" placeholder="ghp_…">
-        <div class="modal-actions">
-          <button id="tokenSave" class="management-btn">Save Token</button>
-          <button id="tokenCancel" class="management-btn close-btn">Cancel</button>
+        
+        <!-- Management Toggle Button -->
+        <button id="managementToggle" class="management-toggle" title="Manage Content">⚙️</button>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <button class="tab active" data-category="food">Food & Drink</button>
+            <button class="tab" data-category="feelings">Feelings</button>
+            <button class="tab" data-category="selfcare">Self Care</button>
+            <button class="tab" data-category="health">Health</button>
+            <button class="tab" data-category="routine">Daily Routine</button>
+            <button class="tab" data-category="MyPeople">My People</button>
+            <button class="tab" data-category="social">Social Chat</button>
+            <button class="tab" data-category="activities">Activities</button>
+            <button class="tab" data-category="entertainment">Entertainment</button>
+            <button class="tab" data-category="memories">Memories</button>
+            <button class="tab" data-category="environment">Comfort</button>
         </div>
-      </div>
+        
+        <!-- Dynamic Button Grid -->
+        <div class="grid" id="buttonGrid">
+            <!-- Buttons will be loaded here by JavaScript -->
+        </div>
+
+        <!-- Password Prompt Modal -->
+        <div id="passwordModal" class="modal">
+            <div class="modal-content">
+                <h3>Management Access</h3>
+                <p>Enter password to manage content:</p>
+                <input type="password" id="passwordInput" placeholder="Enter password..." class="management-input">
+                <div class="modal-actions">
+                    <button id="passwordSubmit" class="management-btn">Access</button>
+                    <button id="passwordCancel" class="management-btn close-btn">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Management Panel -->
+        <div id="managementPanel" class="management-panel">
+            <h3>Content Management</h3>
+            
+            <div class="management-section">
+                <h4>Export/Backup</h4>
+                <button id="exportData" class="management-btn">📥 Export All Data</button>
+                <p class="help-text">Download a backup of all phrases and people</p>
+            </div>
+
+            <div class="management-section">
+                <h4>Add New Phrase</h4>
+                <select id="addCategorySelect" class="management-input">
+                    <option value="food">Food & Drink</option>
+                    <option value="feelings">Feelings</option>
+                    <option value="selfcare">Self Care</option>
+                    <option value="health">Health</option>
+                    <option value="routine">Daily Routine</option>
+                    <option value="social">Social Chat</option>
+                    <option value="activities">Activities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="memories">Memories</option>
+                    <option value="environment">Comfort</option>
+                </select>
+                <input type="text" id="newPhraseText" placeholder="Enter phrase text..." class="management-input">
+                <input type="text" id="newPhraseImage" placeholder="Image filename (optional)" class="management-input">
+                <button id="addPhrase" class="management-btn">➕ Add Phrase</button>
+            </div>
+
+            <div class="management-section">
+                <h4>Remove Phrase</h4>
+                <select id="removeCategorySelect" class="management-input">
+                    <option value="food">Food & Drink</option>
+                    <option value="feelings">Feelings</option>
+                    <option value="selfcare">Self Care</option>
+                    <option value="health">Health</option>
+                    <option value="routine">Daily Routine</option>
+                    <option value="social">Social Chat</option>
+                    <option value="activities">Activities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="memories">Memories</option>
+                    <option value="environment">Comfort</option>
+                </select>
+                <select id="removePhraseSelect" class="management-input">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <button id="removePhrase" class="management-btn remove-btn">🗑️ Remove Selected Phrase</button>
+            </div>
+
+            <div class="management-section">
+                <h4>Edit Existing Phrase</h4>
+                <select id="editCategorySelect" class="management-input">
+                    <option value="food">Food & Drink</option>
+                    <option value="feelings">Feelings</option>
+                    <option value="selfcare">Self Care</option>
+                    <option value="health">Health</option>
+                    <option value="routine">Daily Routine</option>
+                    <option value="social">Social Chat</option>
+                    <option value="activities">Activities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="memories">Memories</option>
+                    <option value="environment">Comfort</option>
+                </select>
+                <select id="editPhraseSelect" class="management-input">
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+                <input type="text" id="editPhraseText" placeholder="New phrase text..." class="management-input">
+                <input type="text" id="editPhraseImage" placeholder="New image filename (optional)" class="management-input">
+                <button id="updatePhrase" class="management-btn">✏️ Update Phrase</button>
+            </div>
+
+            <div class="management-section">
+                <h4>Reorder Phrases</h4>
+                <select id="reorderCategorySelect" class="management-input">
+                    <option value="food">Food & Drink</option>
+                    <option value="feelings">Feelings</option>
+                    <option value="selfcare">Self Care</option>
+                    <option value="health">Health</option>
+                    <option value="routine">Daily Routine</option>
+                    <option value="social">Social Chat</option>
+                    <option value="activities">Activities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="memories">Memories</option>
+                    <option value="environment">Comfort</option>
+                </select>
+                <div class="reorder-container">
+                    <ul id="phraseList" class="phrase-list">
+                        <!-- Phrases will be populated here for reordering -->
+                    </ul>
+                </div>
+                <button id="saveOrder" class="management-btn">💾 Save New Order</button>
+                <p class="help-text">Drag phrases up or down to reorder them</p>
+            </div>
+
+            <div class="management-section">
+                <h4>Quick Actions</h4>
+                <button id="showAllPhrases" class="management-btn">👁️ View All Phrases</button>
+                <button id="reloadApp" class="management-btn">🔄 Reload App</button>
+                <button id="resetData" class="management-btn remove-btn">🔄 Reset to Default Data</button>
+            </div>
+
+            <button id="closeManagement" class="management-btn close-btn">❌ Close Management</button>
+        </div>
     </div>
-
-    <div id="managementPanel" class="management-panel" style="display:none;">
-      <h3>Content Management</h3>
-
-      <div class="management-section">
-        <h4>Sync</h4>
-        <button id="syncNow" class="management-btn">🔁 Sync Now</button>
-        <button id="setToken" class="management-btn">🔑 Set GitHub Token</button>
-        <p class="help-text">No token → read‑only. With token → your edits save to GitHub.</p>
-      </div>
-
-      <div class="management-section">
-        <h4>Add New Phrase</h4>
-        <select id="addCategorySelect">
-          <option value="food">Food & Drink</option>
-          <option value="feelings">Feelings</option>
-          <option value="selfcare">Self Care</option>
-          <option value="health">Health</option>
-          <option value="routine">Daily Routine</option>
-          <option value="social">Social Chat</option>
-          <option value="activities">Activities</option>
-          <option value="entertainment">Entertainment</option>
-          <option value="memories">Memories</option>
-          <option value="environment">Comfort</option>
-          <option value="MyPeople">My People</option>
-        </select>
-        <input type="text" id="newPhraseText" class="management-input" placeholder="Enter phrase (or person name)…">
-        <input type="text" id="newPhraseImage" class="management-input" placeholder="Image filename (optional)">
-        <button id="addPhrase" class="management-btn">➕ Add</button>
-      </div>
-
-      <div class="management-section">
-        <h4>Remove Phrase</h4>
-        <select id="removeCategorySelect">
-          <option value="food">Food & Drink</option>
-          <option value="feelings">Feelings</option>
-          <option value="selfcare">Self Care</option>
-          <option value="health">Health</option>
-          <option value="routine">Daily Routine</option>
-          <option value="social">Social Chat</option>
-          <option value="activities">Activities</option>
-          <option value="entertainment">Entertainment</option>
-          <option value="memories">Memories</option>
-          <option value="environment">Comfort</option>
-          <option value="MyPeople">My People</option>
-        </select>
-        <select id="removePhraseSelect" class="management-input"></select>
-        <button id="removePhrase" class="management-btn remove-btn">🗑️ Remove Selected</button>
-      </div>
-
-      <div class="management-section">
-        <h4>Backup</h4>
-        <button id="exportData" class="management-btn">📥 Export All Data</button>
-        <button id="reloadApp" class="management-btn">🔄 Reload App</button>
-      </div>
-
-      <button id="closeManagement" class="management-btn close-btn">❌ Close</button>
-    </div>
-  </div>
-  <script src="script.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
