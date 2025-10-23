@@ -1,3 +1,4 @@
+
 /* MyNewVoice - Enhanced Communication App Styles */
 :root {
   --font-xs: clamp(0.85rem, 2.5vw, 1rem);
@@ -25,6 +26,9 @@
   --text-light: #fff;
   --bg-light: #fff;
   --bg-dark: #2d3748;
+  --error-color: #dc3545;
+  --success-color: #28a745;
+  --warning-color: #ffc107;
 }
 
 * {
@@ -41,6 +45,7 @@ body {
   min-height: 100vh;
   font-size: var(--font-md);
   line-height: 1.5;
+  color: var(--text-dark);
 }
 
 .container {
@@ -51,6 +56,75 @@ body {
   padding: var(--space-lg);
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
   position: relative;
+}
+
+/* Toast Notifications */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-dark);
+  color: var(--text-light);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  z-index: 10000;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  max-width: 90%;
+  text-align: center;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.toast.success {
+  background: var(--success-color);
+}
+
+.toast.error {
+  background: var(--error-color);
+}
+
+.toast.warning {
+  background: var(--warning-color);
+  color: var(--text-dark);
+}
+
+/* Loading Indicator */
+.loading-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  color: var(--text-light);
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid var(--text-light);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--space-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Message Bar */
@@ -105,6 +179,11 @@ body {
   transform: scale(1.1);
 }
 
+.management-toggle:focus {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
 /* Tab Styles */
 .tab-container {
   display: flex;
@@ -147,6 +226,11 @@ body {
   transform: translateY(-2px);
 }
 
+.tab:focus {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
 /* Grid Layout */
 .grid {
   display: grid;
@@ -179,12 +263,18 @@ body {
   border-color: var(--primary-color);
 }
 
+.grid-button:focus {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
 .grid-button img {
   max-width: clamp(45px, 10vw, 65px);
   max-height: clamp(45px, 10vw, 65px);
   margin-bottom: var(--space-sm);
   border-radius: var(--radius-sm);
   transition: transform 0.3s ease;
+  background: #f8f9fa;
 }
 
 .grid-button:hover img {
@@ -197,6 +287,21 @@ body {
   color: var(--text-dark);
   text-align: center;
   line-height: 1.3;
+}
+
+/* Default image placeholder */
+.grid-button .image-placeholder {
+  width: clamp(45px, 10vw, 65px);
+  height: clamp(45px, 10vw, 65px);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: var(--font-lg);
+  font-weight: bold;
+  margin-bottom: var(--space-sm);
 }
 
 /* My People Styles */
@@ -319,6 +424,7 @@ body {
   padding: var(--space-md);
   background: #f8f9fa;
   border-radius: var(--radius-md);
+  border: 1px solid #e9ecef;
 }
 
 .management-section h4 {
@@ -334,11 +440,13 @@ body {
   border: 2px solid #dee2e6;
   border-radius: var(--radius-sm);
   font-size: var(--font-sm);
+  transition: border-color 0.3s ease;
 }
 
 .management-input:focus {
   border-color: var(--primary-color);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
 .management-btn {
@@ -357,6 +465,11 @@ body {
 .management-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.management-btn:focus {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
 }
 
 .remove-btn {
@@ -414,6 +527,10 @@ body {
   opacity: 0.6;
   background: var(--primary-color);
   color: white;
+}
+
+.phrase-item:focus {
+  outline: 2px solid var(--secondary-color);
 }
 
 .phrase-handle {
@@ -485,6 +602,10 @@ body {
   transform: scale(1.1);
 }
 
+.close-profile:focus {
+  outline: 3px solid var(--secondary-color);
+}
+
 .profile-header {
   display: flex;
   align-items: center;
@@ -500,6 +621,7 @@ body {
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid var(--secondary-color);
+  background: #f8f9fa;
 }
 
 .profile-info h2 {
@@ -563,6 +685,23 @@ body {
   gap: var(--space-xs);
 }
 
+.action-btn:focus {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+/* Speaking State */
+.grid-button.speaking {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
+  color: var(--text-light) !important;
+  border-color: #388E3C !important;
+  transform: scale(0.95);
+}
+
+.grid-button.speaking span {
+  color: var(--text-light) !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   body {
@@ -594,6 +733,11 @@ body {
     font-size: var(--font-xs);
     min-width: clamp(70px, 22vw, 85px);
   }
+  
+  .management-panel {
+    padding: var(--space-md);
+    width: 95%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -602,8 +746,8 @@ body {
   }
   
   .management-panel {
-    width: 95%;
-    padding: var(--space-md);
+    width: 98%;
+    padding: var(--space-sm);
   }
   
   .profile-header {
@@ -614,15 +758,40 @@ body {
   .profile-actions {
     grid-template-columns: 1fr;
   }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
 }
 
-/* Speaking State */
-.grid-button.speaking {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)) !important;
-  color: var(--text-light) !important;
-  border-color: #388E3C !important;
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .grid-button {
+    border-width: 3px;
+  }
+  
+  .tab {
+    border: 2px solid transparent;
+  }
+  
+  .tab.active {
+    border-color: var(--text-dark);
+  }
 }
 
-.grid-button.speaking span {
-  color: var(--text-light) !important;
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .grid-button:hover {
+    transform: none;
+  }
+  
+  .management-toggle:hover {
+    transform: none;
+  }
 }

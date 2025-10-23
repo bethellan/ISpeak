@@ -1,10 +1,11 @@
+
 {
   "name": "MyNewVoice",
   "short_name": "MyNewVoice",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0f766e",
+  "theme_color": "#4CAF50",
   "orientation": "portrait",
   "scope": "./",
   "icons": [
@@ -18,5 +19,7 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "categories": ["health", "communication"],
+  "description": "A communication tool for expressing needs and thoughts"
 }

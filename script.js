@@ -1,17 +1,21 @@
+
 // ============================================================================
 // DATA PERSISTENCE FUNCTIONS
 // ============================================================================
 
 const STORAGE_KEY = 'mynevoice_data';
 const MANAGEMENT_PASSWORD = "19Hector";
+const DEFAULT_IMAGE = 'default.jpg';
 
 // Function to save all data to localStorage
 function saveDataToStorage() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(buttonData));
         console.log('Data saved to localStorage');
+        showToast('Data saved successfully', 'success');
     } catch (error) {
         console.error('Error saving data:', error);
+        showToast('Error saving data', 'error');
     }
 }
 
@@ -43,6 +47,45 @@ function resetToDefaultData() {
 }
 
 // ============================================================================
+// TOAST NOTIFICATIONS
+// ============================================================================
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    toast.textContent = message;
+    toast.className = 'toast show';
+    
+    // Remove previous type classes
+    toast.classList.remove('success', 'error', 'warning', 'info');
+    
+    // Add current type class
+    if (type !== 'info') {
+        toast.classList.add(type);
+    }
+    
+    // Auto-hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// ============================================================================
+// LOADING INDICATOR
+// ============================================================================
+
+function showLoading() {
+    const loader = document.getElementById('loadingIndicator');
+    if (loader) loader.style.display = 'flex';
+}
+
+function hideLoading() {
+    const loader = document.getElementById('loadingIndicator');
+    if (loader) loader.style.display = 'none';
+}
+
+// ============================================================================
 // PASSWORD PROTECTION
 // ============================================================================
 
@@ -64,7 +107,7 @@ function checkPassword() {
         hidePasswordModal();
         showManagementPanel();
     } else {
-        alert('Incorrect password. Please try again.');
+        showToast('Incorrect password. Please try again.', 'error');
         document.getElementById('passwordInput').value = '';
         document.getElementById('passwordInput').focus();
     }
@@ -368,16 +411,9 @@ function speakText(text, buttonElement) {
 
     if (buttonElement) {
         buttonElement.classList.add('speaking');
-        buttonElement.style.backgroundColor = '#4CAF50';
-        buttonElement.style.borderColor = '#388E3C';
-        buttonElement.style.transform = 'scale(0.95)';
-
         setTimeout(() => {
             buttonElement.classList.remove('speaking');
-            buttonElement.style.backgroundColor = '';
-            buttonElement.style.borderColor = '';
-            buttonElement.style.transform = '';
-        }, 500);
+        }, 2000);
     }
 
     const utterance = new SpeechSynthesisUtterance(text);
@@ -388,9 +424,6 @@ function speakText(text, buttonElement) {
     utterance.onend = function() {
         if (buttonElement) {
             buttonElement.classList.remove('speaking');
-            buttonElement.style.backgroundColor = '';
-            buttonElement.style.borderColor = '';
-            buttonElement.style.transform = '';
         }
     };
 
