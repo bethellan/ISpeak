@@ -1,17 +1,102 @@
-// ISpeak Root GitHub Edition (token prompt)
-const STORAGE_VERSION='2.0'; const STORAGE_KEY='ispeak_data_v'+STORAGE_VERSION;
+// ISpeak Root GitHub Edition (token prompt) - Optimized for local-first
+const STORAGE_VERSION='2.0'; 
+const STORAGE_KEY='ispeak_data_v'+STORAGE_VERSION;
 
 let buttonData={
-  food:[{text:"I'm hungry",image:"hungry.jpg"},{text:"I'm thirsty",image:"thirsty.jpg"}],
-  feelings:[{text:"I'm happy",image:"happy.jpg"},{text:"I'm sad",image:"sad.jpg"}],
-  selfcare:[{text:"I need the bathroom",image:"bathroom.jpg"}],
-  health:[{text:"I don't feel well",image:"unwell.jpg"}],
-  routine:[{text:"What's happening today?",image:"daily_schedule.jpg"}],
-  social:[{text:"How are you today?",image:"how_are_you.jpg"}],
-  activities:[{text:"I'd like to watch TV",image:"tv.jpg"}],
-  entertainment:[{text:"Let's watch the cricket",image:"cricket.jpg"}],
-  memories:[{text:"Remember our holiday to…",image:"holiday.jpg"}],
-  environment:[{text:"It's too cold in here",image:"cold.jpg"}],
+  food:[
+    {text:"I'm hungry",image:"hungry.jpg"},
+    {text:"I'm thirsty",image:"thirsty.jpg"},
+    {text:"I'd like a snack",image:"snack.jpg"},
+    {text:"Can I have a drink?",image:"drink.jpg"},
+    {text:"I'd like a cup of tea",image:"tea.jpg"},
+    {text:"I'd like a coffee",image:"coffee.jpg"},
+    {text:"It's time for breakfast",image:"breakfast.jpg"},
+    {text:"It's time for lunch",image:"lunch.jpg"},
+    {text:"It's time for dinner",image:"dinner.jpg"},
+    {text:"That was delicious",image:"delicious.jpg"}
+  ],
+  feelings:[
+    {text:"I'm happy",image:"happy.jpg"},
+    {text:"I'm sad",image:"sad.jpg"},
+    {text:"I'm excited",image:"excited.jpg"},
+    {text:"I'm tired",image:"tired.jpg"},
+    {text:"I'm frustrated",image:"frustrated.jpg"},
+    {text:"I'm anxious",image:"anxious.jpg"},
+    {text:"I'm comfortable",image:"comfortable.jpg"},
+    {text:"I'm in pain",image:"pain.jpg"},
+    {text:"I need a hug",image:"hug.jpg"}
+  ],
+  selfcare:[
+    {text:"I need the bathroom",image:"bathroom.jpg"},
+    {text:"I need to shower",image:"shower.jpg"},
+    {text:"I need to brush my teeth",image:"teeth.jpg"},
+    {text:"I need to shave",image:"shave.jpg"},
+    {text:"I need to get dressed",image:"dressed.jpg"},
+    {text:"I'm ready for bed",image:"bed.jpg"}
+  ],
+  health:[
+    {text:"I don't feel well",image:"unwell.jpg"},
+    {text:"I have a headache",image:"headache.jpg"},
+    {text:"I feel sick",image:"sick.jpg"},
+    {text:"I need my medication",image:"medication.jpg"},
+    {text:"Can you call the doctor?",image:"doctor.jpg"},
+    {text:"I need help",image:"help.jpg"}
+  ],
+  routine:[
+    {text:"What's happening today?",image:"daily_schedule.jpg"},
+    {text:"What's for breakfast?",image:"breakfast.jpg"},
+    {text:"What's for lunch?",image:"lunch.jpg"},
+    {text:"What's for dinner?",image:"dinner.jpg"},
+    {text:"What time is it?",image:"time.jpg"},
+    {text:"What day is it today?",image:"calendar.jpg"},
+    {text:"What's the plan for tomorrow?",image:"tomorrow.jpg"}
+  ],
+  social:[
+    {text:"How are you today?",image:"how_are_you.jpg"},
+    {text:"Good morning",image:"good_morning.jpg"},
+    {text:"Good afternoon",image:"good_afternoon.jpg"},
+    {text:"Good night",image:"good_night.jpg"},
+    {text:"Please",image:"please.jpg"},
+    {text:"Thank you",image:"thank_you.jpg"},
+    {text:"You're welcome",image:"welcome.jpg"},
+    {text:"I love you",image:"love.jpg"},
+    {text:"Can we talk?",image:"talk.jpg"}
+  ],
+  activities:[
+    {text:"I'd like to watch TV",image:"tv.jpg"},
+    {text:"Let's go for a walk",image:"walk.jpg"},
+    {text:"I'd like to read",image:"read.jpg"},
+    {text:"Can we listen to music?",image:"music.jpg"},
+    {text:"I'd like to go outside",image:"outside.jpg"},
+    {text:"Let's play a game",image:"game.jpg"},
+    {text:"I'm bored",image:"bored.jpg"}
+  ],
+  entertainment:[
+    {text:"Let's watch the cricket",image:"cricket.jpg"},
+    {text:"Let's watch a movie",image:"movie.jpg"},
+    {text:"Put the news on",image:"news.jpg"},
+    {text:"I'd like to watch sport",image:"sport.jpg"},
+    {text:"Change the channel",image:"channel.jpg"},
+    {text:"Turn it up",image:"volume_up.jpg"},
+    {text:"Turn it down",image:"volume_down.jpg"}
+  ],
+  memories:[
+    {text:"Remember our holiday to…",image:"holiday.jpg"},
+    {text:"Tell me about when we…",image:"memories.jpg"},
+    {text:"Where are the photo albums?",image:"photos.jpg"},
+    {text:"I remember when…",image:"remember.jpg"},
+    {text:"That was a good time",image:"good_time.jpg"}
+  ],
+  environment:[
+    {text:"It's too cold in here",image:"cold.jpg"},
+    {text:"It's too hot in here",image:"hot.jpg"},
+    {text:"Open the window",image:"window.jpg"},
+    {text:"Close the window",image:"window_close.jpg"},
+    {text:"Turn on the light",image:"light_on.jpg"},
+    {text:"Turn off the light",image:"light_off.jpg"},
+    {text:"It's too noisy",image:"noisy.jpg"},
+    {text:"It's too bright",image:"bright.jpg"}
+  ],
   MyPeople:[
     {id:"person_sue",text:"Sue",relationship:"My Wife",birthday:"",image:"Sue.jpg"},
     {id:"person_andrew",text:"Andrew",relationship:"My Son",birthday:"",image:"Andrew.jpg"},
@@ -32,23 +117,68 @@ let buttonData={
   ]
 };
 
-function saveDataToStorage(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(buttonData)); }catch(e){ console.error(e); } }
-function loadDataFromStorage(){ try{ const d = localStorage.getItem(STORAGE_KEY); if(d) buttonData = JSON.parse(d); }catch(e){ console.error(e); } }
-function validateStoredData(){ try{ const d = localStorage.getItem(STORAGE_KEY); if(!d||d==='undefined'||d==='{}') localStorage.removeItem(STORAGE_KEY); }catch(e){ localStorage.removeItem(STORAGE_KEY); } }
+function saveDataToStorage(){ 
+  try{ 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buttonData)); 
+  }catch(e){ 
+    console.error('Save error:', e); 
+  } 
+}
+
+function loadDataFromStorage(){ 
+  try{ 
+    const d = localStorage.getItem(STORAGE_KEY); 
+    if(d && d !== 'undefined' && d !== '{}') {
+      const parsed = JSON.parse(d);
+      // Only update if we have valid data
+      if(parsed && typeof parsed === 'object') {
+        buttonData = parsed;
+        return true;
+      }
+    }
+  }catch(e){ 
+    console.error('Load error:', e); 
+  }
+  return false;
+}
+
+function validateStoredData(){ 
+  try{ 
+    const d = localStorage.getItem(STORAGE_KEY); 
+    if(!d || d==='undefined' || d==='{}' || d==='null') {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  }catch(e){ 
+    localStorage.removeItem(STORAGE_KEY); 
+  } 
+}
 
 function speakText(text, el){
-  if(!('speechSynthesis' in window)){ alert('Speech not supported'); return; }
-  const s=window.speechSynthesis; s.cancel();
-  if(el){ el.classList.add('speaking'); setTimeout(()=>el.classList.remove('speaking'),1500); }
-  const u=new SpeechSynthesisUtterance(text); u.rate=0.9; s.speak(u);
-  const bar=document.querySelector('#messageBar p'); if(bar) bar.textContent=text;
+  if(!('speechSynthesis' in window)){ 
+    alert('Speech not supported'); 
+    return; 
+  }
+  const s=window.speechSynthesis; 
+  s.cancel();
+  if(el){ 
+    el.classList.add('speaking'); 
+    setTimeout(()=>el.classList.remove('speaking'),1500); 
+  }
+  const u=new SpeechSynthesisUtterance(text); 
+  u.rate=0.9; 
+  s.speak(u);
+  const bar=document.querySelector('#messageBar p'); 
+  if(bar) bar.textContent=text;
 }
 
 function populateGrid(cat){
-  const g=document.getElementById('buttonGrid'); g.innerHTML='';
-  const arr=buttonData[cat]; if(!arr) return;
+  const g=document.getElementById('buttonGrid'); 
+  g.innerHTML='';
+  const arr=buttonData[cat]; 
+  if(!arr) return;
   arr.forEach(b=>{
-    const el=document.createElement('button'); el.className='grid-button';
+    const el=document.createElement('button'); 
+    el.className='grid-button';
     const img=`images/${cat}/${b.image||''}`;
     el.innerHTML=`<img src="${img}" alt=""><span>${b.text}</span>`;
     el.onclick=()=>speakText(b.text, el);
@@ -59,7 +189,8 @@ function populateGrid(cat){
 function initTabs(){
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active'); populateGrid(t.dataset.category);
+    t.classList.add('active'); 
+    populateGrid(t.dataset.category);
   }));
 }
 
@@ -71,12 +202,25 @@ function openManagement(){ showModal('passwordModal'); }
 function closeManagement(){ document.getElementById('managementPanel').style.display='none'; }
 function checkPassword(){
   if(document.getElementById('passwordInput').value===PASSWORD){
-    hideModal('passwordModal'); document.getElementById('managementPanel').style.display='block'; ensureToken();
-  } else alert('Incorrect password');
+    hideModal('passwordModal'); 
+    document.getElementById('managementPanel').style.display='block'; 
+    // Token prompt is now optional - don't force it
+  } else {
+    alert('Incorrect password');
+    document.getElementById('passwordInput').value = '';
+  }
 }
 
-// Token prompt (session only)
-function ensureToken(){ const t=sessionStorage.getItem('ISPEAK_GH_TOKEN'); if(!t) showModal('tokenModal'); }
+// Token prompt (completely optional)
+function ensureToken(){ 
+  const t=sessionStorage.getItem('ISPEAK_GH_TOKEN'); 
+  if(!t) {
+    showModal('tokenModal'); 
+  } else {
+    alert('GitHub token already set for this session.');
+  }
+}
+
 function saveTokenFromModal(){
   const t=document.getElementById('tokenInput').value.trim();
   if(!t) return;
@@ -88,103 +232,195 @@ function saveTokenFromModal(){
 // Add/Remove
 function refreshRemoveList(){
   const cat=document.getElementById('removeCategorySelect').value;
-  const sel=document.getElementById('removePhraseSelect'); sel.innerHTML='';
+  const sel=document.getElementById('removePhraseSelect'); 
+  sel.innerHTML='';
   (buttonData[cat]||[]).forEach((it,idx)=>{
-    const o=document.createElement('option'); o.value=idx; o.textContent=it.text; sel.appendChild(o);
+    const o=document.createElement('option'); 
+    o.value=idx; 
+    o.textContent=it.text; 
+    sel.appendChild(o);
   });
 }
+
 function addPhrase(){
   const cat=document.getElementById('addCategorySelect').value;
   const txt=document.getElementById('newPhraseText').value.trim();
   const img=document.getElementById('newPhraseImage').value.trim();
   if(!txt) return alert('Enter text');
-  const item = (cat==='MyPeople') ? {id:'person_'+txt.toLowerCase(), text:txt, relationship:'', birthday:'', image:img|| (txt+'.jpg')} : {text:txt, image:img||''};
-  buttonData[cat]=buttonData[cat]||[]; buttonData[cat].push(item);
+  const item = (cat==='MyPeople') ? {id:'person_'+txt.toLowerCase().replace(/\s+/g, '_'), text:txt, relationship:'', birthday:'', image:img|| (txt+'.jpg')} : {text:txt, image:img||''};
+  buttonData[cat]=buttonData[cat]||[]; 
+  buttonData[cat].push(item);
   saveDataToStorage();
   const active=document.querySelector('.tab.active').dataset.category;
   if(active===cat) populateGrid(cat);
   alert('Added.');
-  saveSharedData();
+  
+  // Clear form
+  document.getElementById('newPhraseText').value = '';
+  document.getElementById('newPhraseImage').value = '';
+  
+  // Auto-save to GitHub if token exists (optional)
+  const token=sessionStorage.getItem('ISPEAK_GH_TOKEN');
+  if(token) {
+    saveSharedData();
+  }
+  
   refreshRemoveList();
 }
+
 function removePhrase(){
   const cat=document.getElementById('removeCategorySelect').value;
   const idx=parseInt(document.getElementById('removePhraseSelect').value,10);
   if(isNaN(idx)) return;
-  buttonData[cat].splice(idx,1); saveDataToStorage();
+  buttonData[cat].splice(idx,1); 
+  saveDataToStorage();
   const active=document.querySelector('.tab.active').dataset.category;
   if(active===cat) populateGrid(cat);
   alert('Removed.');
-  saveSharedData();
+  
+  // Auto-save to GitHub if token exists (optional)
+  const token=sessionStorage.getItem('ISPEAK_GH_TOKEN');
+  if(token) {
+    saveSharedData();
+  }
+  
   refreshRemoveList();
 }
+
 function exportData(){
   const blob=new Blob([JSON.stringify(buttonData,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='ispeak_backup.json'; a.click();
+  const a=document.createElement('a'); 
+  a.href=URL.createObjectURL(blob); 
+  a.download='ispeak_backup.json'; 
+  a.click();
 }
 
-// GitHub sync
+// GitHub sync - COMPLETELY OPTIONAL
 const GITHUB_USERNAME='bethellan', GITHUB_REPO='ISpeak';
 const DATA_URL = `https://${GITHUB_USERNAME}.github.io/${GITHUB_REPO}/data/mynevoice_data.json`;
 
 function deepMerge(target, source){
   if(Array.isArray(source)) return source;
   for(const k in source){
-    if(source[k] && typeof source[k]==='object' && !Array.isArray(source[k])) target[k]=deepMerge(target[k]||{}, source[k]);
-    else target[k]=source[k];
+    if(source[k] && typeof source[k]==='object' && !Array.isArray(source[k])) {
+      target[k] = deepMerge(target[k]||{}, source[k]);
+    } else {
+      target[k] = source[k];
+    }
   }
   return target;
 }
 
 async function loadSharedData(){
   try{
+    console.log('Attempting to load shared data from GitHub...');
     const r=await fetch(DATA_URL,{cache:'no-store'});
-    if(!r.ok) throw new Error(r.status);
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
     const shared=await r.json();
+    
+    // Merge with existing data
     buttonData = deepMerge(buttonData, shared);
     saveDataToStorage();
-    const active=document.querySelector('.tab.active'); const cat=active?active.dataset.category:'food';
+    
+    // Refresh current view
+    const active=document.querySelector('.tab.active'); 
+    const cat=active ? active.dataset.category : 'food';
     populateGrid(cat);
-    console.log('Loaded shared data from GitHub.');
+    
+    console.log('Loaded and merged shared data from GitHub.');
+    return true;
   }catch(e){
-    console.warn('GitHub load failed, using local cache', e);
+    console.log('GitHub load failed, using local data only:', e.message);
+    return false;
   }
 }
+
 async function saveSharedData(){
   try{
     const token=sessionStorage.getItem('ISPEAK_GH_TOKEN');
-    if(!token){ console.log('No GitHub token; read-only.'); return; }
+    if(!token){ 
+      console.log('No GitHub token; read-only.'); 
+      alert('No GitHub token set. Go to Sync section to set token.');
+      return false; 
+    }
+    
     const repo = `${GITHUB_USERNAME}/${GITHUB_REPO}`;
     const path = 'data/mynevoice_data.json';
 
-    // get SHA
-    const info=await fetch(`https://api.github.com/repos/${repo}/contents/${path}`);
-    const infoJson=await info.json();
-    const sha = infoJson && infoJson.sha ? infoJson.sha : undefined;
+    // Try to get existing file SHA
+    let sha = undefined;
+    try {
+      const info = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`);
+      if(info.ok) {
+        const infoJson = await info.json();
+        sha = infoJson && infoJson.sha ? infoJson.sha : undefined;
+      }
+    } catch(e) {
+      console.log('No existing file or cannot get SHA:', e.message);
+    }
 
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(buttonData,null,2))));
     const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
       method:'PUT',
-      headers:{ 'Authorization':`token ${token}`,'Content-Type':'application/json' },
-      body: JSON.stringify({ message:'Update via ISpeak app', content, sha })
+      headers:{ 
+        'Authorization':`token ${token}`,
+        'Content-Type':'application/json' 
+      },
+      body: JSON.stringify({ 
+        message:'Update via ISpeak app', 
+        content, 
+        sha 
+      })
     });
-    if(!res.ok) console.error('GitHub save failed:', await res.text());
-    else console.log('Saved data to GitHub');
+    
+    if(!res.ok) {
+      const errorText = await res.text();
+      console.error('GitHub save failed:', errorText);
+      alert('GitHub save failed. Check token permissions.');
+      return false;
+    }
+    
+    console.log('Saved data to GitHub');
+    alert('Successfully saved to GitHub!');
+    return true;
   }catch(e){
     console.error('Error saving to GitHub', e);
+    alert('Error saving to GitHub: ' + e.message);
+    return false;
   }
 }
-async function syncNow(){ await loadSharedData(); alert('Sync complete'); }
 
+async function syncNow(){ 
+  const success = await loadSharedData(); 
+  if(success) {
+    alert('Sync complete - loaded latest data from GitHub');
+  } else {
+    alert('Sync failed - using local data only');
+  }
+}
+
+// Initialize app - FAST LOCAL LOADING
 document.addEventListener('DOMContentLoaded', ()=>{
-  validateStoredData(); loadDataFromStorage();
-  initTabs(); populateGrid('food');
-
+  // First: validate and load local data immediately
+  validateStoredData(); 
+  const hasLocalData = loadDataFromStorage();
+  
+  // Second: initialize UI immediately with local data
+  initTabs(); 
+  populateGrid('food');
+  
+  // Third: set up all event handlers
   document.getElementById('managementToggle').onclick=openManagement;
   document.getElementById('passwordSubmit').onclick=checkPassword;
-  document.getElementById('passwordCancel').onclick=()=>hideModal('passwordModal');
+  document.getElementById('passwordCancel').onclick=()=>{
+    hideModal('passwordModal');
+    document.getElementById('passwordInput').value = '';
+  };
   document.getElementById('tokenSave').onclick=saveTokenFromModal;
-  document.getElementById('tokenCancel').onclick=()=>hideModal('tokenModal');
+  document.getElementById('tokenCancel').onclick=()=>{
+    hideModal('tokenModal');
+    document.getElementById('tokenInput').value = '';
+  };
 
   document.getElementById('addPhrase').onclick=addPhrase;
   document.getElementById('removePhrase').onclick=removePhrase;
@@ -196,6 +432,19 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('setToken').onclick=ensureToken;
 
   refreshRemoveList();
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-  setTimeout(loadSharedData, 400);
+  
+  // Fourth: register service worker (non-blocking)
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(console.error);
+  }
+  
+  // Fifth: optionally load from GitHub in background (non-blocking)
+  setTimeout(() => {
+    console.log('Background GitHub sync attempt...');
+    loadSharedData().then(success => {
+      if(success) {
+        console.log('Background sync completed');
+      }
+    });
+  }, 2000); // Wait 2 seconds so local UI is fully responsive first
 });
