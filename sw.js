@@ -1,16 +1,8 @@
 [file name]: sw.js
 [file content begin]
 // Service Worker for MyNewVoice PWA
-const CACHE_NAME = 'mynevoice-v1.0.0';
-const urlsToCache = [
-  './',
-  './index.html',
-  './style.css',
-  './script.js',
-  './manifest.json',
-  './images/',
-  './assets/'
-];
+const CACHE_NAME = 'mynevoice-v1.1.1';
+const urlsToCache = ['./','./index.html','./style.css','./script.js','./manifest.json'];
 
 // Install event - cache essential files
 self.addEventListener('install', function(event) {

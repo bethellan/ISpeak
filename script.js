@@ -2,7 +2,18 @@
 // DATA PERSISTENCE FUNCTIONS - SAVES DATA BETWEEN SESSIONS
 // ============================================================================
 
-const STORAGE_KEY = 'mynevoice_data';
+const STORAGE_VERSION = '1.1';
+const STORAGE_KEY = 'mynevoice_data_v' + STORAGE_VERSION;
+
+
+// Cleanup old storage versions
+try {
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('mynevoice_data_v') && key !== STORAGE_KEY) {
+            localStorage.removeItem(key);
+        }
+    });
+} catch (e) { console.warn('Storage cleanup skipped:', e); }
 
 // Function to save all data to localStorage
 function saveDataToStorage() {
@@ -408,6 +419,7 @@ function populateGrid(category) {
 }
 
 function speakText(text, buttonElement) {
+    if (!('speechSynthesis' in window)) { alert('Speech synthesis not supported on this device.'); return; }
     const synth = window.speechSynthesis;
     
     // Cancel any ongoing speech to allow rapid button pressing
@@ -1232,7 +1244,8 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Button data loaded:', buttonData);
     console.log('Food category has items:', buttonData.food ? buttonData.food.length : 'No food category');
     
-    // Load saved data first
+    // Validate and load saved data first
+    validateStoredData && validateStoredData();
     loadDataFromStorage();
     
     // Debug after loading
@@ -1397,4 +1410,17 @@ if ('serviceWorker' in navigator) {
                 console.log('ServiceWorker registration failed: ', error);
             });
     });
+}
+
+
+// Safety check to remove corrupt or empty data
+function validateStoredData() {
+    try {
+        const savedData = localStorage.getItem(STORAGE_KEY);
+        if (!savedData || savedData === "undefined" || savedData === "{}") {
+            localStorage.removeItem(STORAGE_KEY);
+        }
+    } catch (error) {
+        localStorage.removeItem(STORAGE_KEY);
+    }
 }
