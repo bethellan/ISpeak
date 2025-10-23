@@ -1,0 +1,96 @@
+{
+  "food": [
+    {"text": "I'm hungry", "image": "hungry.jpg"},
+    {"text": "I'm thirsty", "image": "thirsty.jpg"},
+    {"text": "I'd like a snack", "image": "snack.jpg"},
+    {"text": "Can I have a drink?", "image": "drink.jpg"},
+    {"text": "I'd like a cup of tea", "image": "tea.jpg"},
+    {"text": "I'd like a coffee", "image": "coffee.jpg"},
+    {"text": "It's time for breakfast", "image": "breakfast.jpg"},
+    {"text": "It's time for lunch", "image": "lunch.jpg"},
+    {"text": "It's time for dinner", "image": "dinner.jpg"},
+    {"text": "That was delicious", "image": "delicious.jpg"}
+  ],
+  "feelings": [
+    {"text": "I'm happy", "image": "happy.jpg"},
+    {"text": "I'm sad", "image": "sad.jpg"},
+    {"text": "I'm excited", "image": "excited.jpg"},
+    {"text": "I'm tired", "image": "tired.jpg"},
+    {"text": "I'm frustrated", "image": "frustrated.jpg"},
+    {"text": "I'm anxious", "image": "anxious.jpg"},
+    {"text": "I'm comfortable", "image": "comfortable.jpg"},
+    {"text": "I'm in pain", "image": "pain.jpg"},
+    {"text": "I need a hug", "image": "hug.jpg"}
+  ],
+  "selfcare": [
+    {"text": "I need the bathroom", "image": "bathroom.jpg"},
+    {"text": "I need to shower", "image": "shower.jpg"},
+    {"text": "I need to brush my teeth", "image": "teeth.jpg"},
+    {"text": "I need to shave", "image": "shave.jpg"},
+    {"text": "I need to get dressed", "image": "dressed.jpg"},
+    {"text": "I'm ready for bed", "image": "bed.jpg"}
+  ],
+  "health": [
+    {"text": "I don't feel well", "image": "unwell.jpg"},
+    {"text": "I have a headache", "image": "headache.jpg"},
+    {"text": "I feel sick", "image": "sick.jpg"},
+    {"text": "I need my medication", "image": "medication.jpg"},
+    {"text": "Can you call the doctor?", "image": "doctor.jpg"},
+    {"text": "I need help", "image": "help.jpg"}
+  ],
+  "routine": [
+    {"text": "What's happening today?", "image": "daily_schedule.jpg"},
+    {"text": "What's for breakfast?", "image": "breakfast.jpg"},
+    {"text": "What's for lunch?", "image": "lunch.jpg"},
+    {"text": "What's for dinner?", "image": "dinner.jpg"},
+    {"text": "What time is it?", "image": "time.jpg"},
+    {"text": "What day is it today?", "image": "calendar.jpg"},
+    {"text": "What's the plan for tomorrow?", "image": "tomorrow.jpg"}
+  ],
+  "social": [
+    {"text": "How are you today?", "image": "how_are_you.jpg"},
+    {"text": "Good morning", "image": "good_morning.jpg"},
+    {"text": "Good afternoon", "image": "good_afternoon.jpg"},
+    {"text": "Good night", "image": "good_night.jpg"},
+    {"text": "Please", "image": "please.jpg"},
+    {"text": "Thank you", "image": "thank_you.jpg"},
+    {"text": "You're welcome", "image": "welcome.jpg"},
+    {"text": "I love you", "image": "love.jpg"},
+    {"text": "Can we talk?", "image": "talk.jpg"}
+  ],
+  "activities": [
+    {"text": "I'd like to watch TV", "image": "tv.jpg"},
+    {"text": "Let's go for a walk", "image": "walk.jpg"},
+    {"text": "I'd like to read", "image": "read.jpg"},
+    {"text": "Can we listen to music?", "image": "music.jpg"},
+    {"text": "I'd like to go outside", "image": "outside.jpg"},
+    {"text": "Let's play a game", "image": "game.jpg"},
+    {"text": "I'm bored", "image": "bored.jpg"}
+  ],
+  "entertainment": [
+    {"text": "Let's watch the cricket", "image": "cricket.jpg"},
+    {"text": "Let's watch a movie", "image": "movie.jpg"},
+    {"text": "Put the news on", "image": "news.jpg"},
+    {"text": "I'd like to watch sport", "image": "sport.jpg"},
+    {"text": "Change the channel", "image": "channel.jpg"},
+    {"text": "Turn it up", "image": "volume_up.jpg"},
+    {"text": "Turn it down", "image": "volume_down.jpg"}
+  ],
+  "memories": [
+    {"text": "Remember our holiday to…", "image": "holiday.jpg"},
+    {"text": "Tell me about when we…", "image": "memories.jpg"},
+    {"text": "Where are the photo albums?", "image": "photos.jpg"},
+    {"text": "I remember when…", "image": "remember.jpg"},
+    {"text": "That was a good time", "image": "good_time.jpg"}
+  ],
+  "environment": [
+    {"text": "It's too cold in here", "image": "cold.jpg"},
+    {"text": "It's too hot in here", "image": "hot.jpg"},
+    {"text": "Open the window", "image": "window.jpg"},
+    {"text": "Close the window", "image": "window_close.jpg"},
+    {"text": "Turn on the light", "image": "light_on.jpg"},
+    {"text": "Turn off the light", "image": "light_off.jpg"},
+    {"text": "It's too noisy", "image": "noisy.jpg"},
+    {"text": "It's too bright", "image": "bright.jpg"}
+  ]
+}
