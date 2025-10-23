@@ -6,37 +6,62 @@
 const STORAGE_KEY = 'mynevoice_data';
 const MANAGEMENT_PASSWORD = "19Hector";
 const DEFAULT_IMAGE = 'default.jpg';
+const CLICK_SOUND = new Audio('assets/sounds/click.mp3');
+CLICK_SOUND.volume = 0.3; // keep it gentle
+
 
 // Function to save all data to localStorage
 function saveDataToStorage() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(buttonData));
-        console.log('Data saved to localStorage');
-        showToast('Data saved successfully', 'success');
-    } catch (error) {
-        console.error('Error saving data:', error);
-        showToast('Error saving data', 'error');
-    }
+  try {
+    const payload = {
+      buttonData,
+      lastModified: new Date().toISOString()
+    };
+    const compressed = LZString.compressToUTF16(JSON.stringify(payload));
+    localStorage.setItem(STORAGE_KEY, compressed);
+    console.log(`Data compressed and saved at ${payload.lastModified}`);
+    showAutoSave();
+  } catch (error) {
+    console.error('Error saving compressed data:', error);
+    showToast('Error saving data', 'error');
+  }
 }
+
 
 // Function to load data from localStorage
 function loadDataFromStorage() {
-    try {
-        const savedData = localStorage.getItem(STORAGE_KEY);
-        if (savedData) {
-            const parsedData = JSON.parse(savedData);
-            // Merge saved data with default data structure
-            Object.keys(parsedData).forEach(category => {
-                if (buttonData[category]) {
-                    buttonData[category] = parsedData[category];
-                }
-            });
-            console.log('Data loaded from localStorage');
-        }
-    } catch (error) {
-        console.error('Error loading data:', error);
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+
+      // 🧩 Backward-compatibility for old uncompressed JSON
+      if (stored.startsWith('{')) {
+        const parsed = JSON.parse(stored);
+        buttonData = parsed.buttonData || parsed;
+        console.log('Loaded uncompressed legacy data — re-saving as compressed.');
+        saveDataToStorage(); // Re-compress and store safely
+        return;
+      }
+
+      // 🧩 Standard decompression path (new format)
+      const decompressed = LZString.decompressFromUTF16(stored);
+      const parsed = JSON.parse(decompressed);
+      if (parsed.buttonData) buttonData = parsed.buttonData;
+      if (parsed.lastModified)
+        console.log('Loaded compressed data last modified:', parsed.lastModified);
+
+    } else {
+      console.warn('No stored data found — loading defaults.');
+      buttonData = JSON.parse(JSON.stringify(defaultButtonData));
+      saveDataToStorage();
     }
+  } catch (e) {
+    console.error('Error decompressing data, restoring defaults.', e);
+    buttonData = JSON.parse(JSON.stringify(defaultButtonData));
+    saveDataToStorage();
+  }
 }
+
 
 // Function to reset to default data
 function resetToDefaultData() {
@@ -49,6 +74,15 @@ function resetToDefaultData() {
 // ============================================================================
 // TOAST NOTIFICATIONS
 // ============================================================================
+
+
+function showAutoSave() {
+  const indicator = document.getElementById('autosaveIndicator');
+  if (!indicator) return;
+  indicator.classList.add('show');
+  setTimeout(() => indicator.classList.remove('show'), 1500);
+}
+
 
 function showToast(message, type = 'info') {
     const toast = document.getElementById('toast');
@@ -113,17 +147,46 @@ function checkPassword() {
     }
 }
 
+// === MANAGEMENT OVERLAY SHOW/HIDE ===
+// ============================================================================
+// MANAGEMENT PANEL FUNCTIONS
+// ============================================================================
+
 function showManagementPanel() {
+    const overlay = document.getElementById('managementOverlay');
     const panel = document.getElementById('managementPanel');
-    panel.style.display = 'block';
-    populateRemovePhraseOptions();
-    populateEditPhraseOptions();
-    populateReorderList();
+    
+    if (overlay && panel) {
+        overlay.style.display = 'flex';
+        // Force reflow to ensure display: flex is applied before adding class
+        void overlay.offsetWidth;
+        overlay.classList.add('show');
+        
+        populateRemovePhraseOptions();
+        populateEditPhraseOptions();
+        populateReorderList();
+
+        // Focus for accessibility
+        setTimeout(() => {
+            const firstButton = panel.querySelector('button, input, select');
+            if (firstButton) firstButton.focus();
+        }, 100);
+    }
 }
 
 function hideManagementPanel() {
-    document.getElementById('managementPanel').style.display = 'none';
+    const overlay = document.getElementById('managementOverlay');
+    const panel = document.getElementById('managementPanel');
+    
+    if (overlay && panel) {
+        overlay.classList.remove('show');
+        // Wait for animation to complete before hiding completely
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 300);
+    }
 }
+
 
 // ============================================================================
 // BUTTON DATA STRUCTURE
@@ -348,6 +411,30 @@ const defaultButtonData = {
 // Initialize buttonData with saved data or defaults
 let buttonData = JSON.parse(JSON.stringify(defaultButtonData));
 
+// === SELF-HEALING DEFAULT DATA CHECK ===
+try {
+  const savedData = localStorage.getItem(STORAGE_KEY);
+  if (savedData) {
+    const parsed = JSON.parse(savedData);
+    // ensure all expected categories exist
+    for (const category in defaultButtonData) {
+      if (!parsed[category]) {
+        parsed[category] = defaultButtonData[category];
+      }
+    }
+    buttonData = parsed;
+    console.log('✅ Default data verified and repaired if needed.');
+  } else {
+    console.warn('⚠️ No saved data found — loading defaults.');
+    buttonData = JSON.parse(JSON.stringify(defaultButtonData));
+    saveDataToStorage();
+  }
+} catch (e) {
+  console.error('❌ Data corrupted. Restoring defaults.', e);
+  buttonData = JSON.parse(JSON.stringify(defaultButtonData));
+  saveDataToStorage();
+}
+
 // ============================================================================
 // MAIN APP FUNCTIONS
 // ============================================================================
@@ -374,7 +461,7 @@ function populateGrid(category) {
             const hasBirthdaySoon = buttonInfo.birthday && countdown !== "";
             
             button.innerHTML = `
-                <img src="${imagePath}" alt="${buttonInfo.text}" onerror="this.style.display='none'">
+                <img src="${imagePath}" alt="${buttonInfo.text}" loading="lazy" onerror="this.style.display='none'">
                 <span>${buttonInfo.text}</span>
                 <div class="person-details">
                     <small>${buttonInfo.relationship}</small>
@@ -400,35 +487,90 @@ function populateGrid(category) {
 
         grid.appendChild(button);
     });
+// === ACCESSIBILITY: KEYBOARD NAVIGATION ===
+const gridButtons = grid.querySelectorAll('.grid-button');
+gridButtons.forEach(btn => {
+  btn.setAttribute('tabindex', '0');
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      btn.click();
+    }
+  });
+});
+
 }
 
 function speakText(text, buttonElement) {
-    const synth = window.speechSynthesis;
-    synth.cancel();
+  const synth = window.speechSynthesis;
+  synth.cancel();
 
-    const messageBar = document.getElementById('messageBar');
-    messageBar.innerHTML = `<p>${text}</p>`;
+  // --- Message bar display ---
+  const messageBar = document.getElementById('messageBar');
+  messageBar.innerHTML = `<p>${text}</p>`;
 
-    if (buttonElement) {
-        buttonElement.classList.add('speaking');
-        setTimeout(() => {
-            buttonElement.classList.remove('speaking');
-        }, 2000);
-    }
+  // --- Subtitles overlay setup ---
+  const subtitle = document.getElementById('speechSubtitle');
+  const showSubtitles = localStorage.getItem('showSubtitles') !== 'false';
 
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = text.length > 100 ? 0.85 : 0.9;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
+  if (subtitle && showSubtitles) {
+    // Split the text into words, wrap each in a span
+    subtitle.innerHTML = '';
+    const words = text.split(/\s+/);
+    words.forEach((word, i) => {
+      const span = document.createElement('span');
+      span.textContent = word + ' ';
+      subtitle.appendChild(span);
+    });
+    subtitle.classList.add('show');
+  }
 
-    utterance.onend = function() {
-        if (buttonElement) {
-            buttonElement.classList.remove('speaking');
+  // --- Click sound ---
+  if (typeof CLICK_SOUND !== 'undefined' && CLICK_SOUND) {
+    CLICK_SOUND.currentTime = 0;
+    CLICK_SOUND.play().catch(() => {});
+  }
+
+  // --- Button highlight ---
+  if (buttonElement) {
+    buttonElement.classList.add('speaking');
+    setTimeout(() => {
+      buttonElement.classList.remove('speaking');
+    }, 2000);
+  }
+
+  // --- Speech setup ---
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = text.length > 100 ? 0.85 : 0.9;
+  utterance.pitch = 1.0;
+  utterance.volume = 1.0;
+
+  // --- Karaoke-style word highlighting ---
+  if (subtitle && showSubtitles) {
+    const spans = subtitle.querySelectorAll('span');
+    let wordIndex = 0;
+    utterance.onboundary = (event) => {
+      if (event.name === 'word' || event.charIndex >= 0) {
+        spans.forEach(span => span.classList.remove('active'));
+        if (wordIndex < spans.length) {
+          spans[wordIndex].classList.add('active');
+          wordIndex++;
         }
+      }
     };
+  }
 
-    synth.speak(utterance);
+  // --- Cleanup when done ---
+  utterance.onend = () => {
+    if (buttonElement) buttonElement.classList.remove('speaking');
+    if (subtitle) subtitle.classList.remove('show');
+  };
+
+  // --- Speak ---
+  synth.speak(utterance);
 }
+
+
 
 // ============================================================================
 // BIRTHDAY COUNTDOWN FUNCTIONS
@@ -826,6 +968,8 @@ function addNewPhrase() {
     }
     
     alert(`Added "${text}" to ${category}`);
+    showToast('💾 Remember to export a backup after changes', 'warning');
+
 }
 
 function removeSelectedPhrase() {
@@ -940,17 +1084,63 @@ function reloadApp() {
 }
 
 function exportButtonData() {
-    const dataStr = JSON.stringify(buttonData, null, 2);
-    const dataBlob = new Blob([dataStr], {type: 'application/json'});
-    
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (!stored) {
+      showToast('⚠️ No data found to export', 'warning');
+      return;
+    }
+
+    // Handle both compressed and uncompressed formats
+    let decompressedData;
+    if (stored.startsWith('{')) {
+      // Old uncompressed JSON
+      decompressedData = JSON.parse(stored);
+    } else {
+      // New compressed data
+      const decompressed = LZString.decompressFromUTF16(stored);
+      decompressedData = JSON.parse(decompressed);
+    }
+
+    // Make sure we include a lastModified field
+    if (!decompressedData.lastModified)
+      decompressedData.lastModified = new Date().toISOString();
+
+    const jsonString = JSON.stringify(decompressedData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(dataBlob);
-    link.download = 'mynevoice_data_backup.json';
-    document.body.appendChild(link);
+    link.href = URL.createObjectURL(blob);
+    link.download = `mynewvoice_backup_${new Date()
+      .toISOString()
+      .split('T')[0]}.json`;
     link.click();
-    document.body.removeChild(link);
-    
-    alert('Data exported! File: mynevoice_data_backup.json');
+
+    showToast('📤 Backup exported successfully', 'success');
+  } catch (err) {
+    console.error('Export failed:', err);
+    showToast('❌ Export failed', 'error');
+  }
+}
+
+
+
+// === SERVICE WORKER REGISTRATION WITH UPDATE PROMPT ===
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').then(reg => {
+    reg.onupdatefound = () => {
+      const newWorker = reg.installing;
+      newWorker.onstatechange = () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // A new version is ready
+          if (confirm('🔄 Update available. Reload now?')) {
+            newWorker.postMessage('skipWaiting');
+            window.location.reload();
+          }
+        }
+      };
+    };
+  }).catch(err => console.error('SW registration failed:', err));
 }
 
 // ============================================================================
@@ -963,6 +1153,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load saved data first
     loadDataFromStorage();
     
+    // === OFFLINE STARTUP FALLBACK ===
+    if (!buttonData || Object.keys(buttonData).length === 0) {
+        console.warn('⚠️ No local data found — using minimal offline fallback.');
+        buttonData = {
+            food: [
+                { text: "I'm hungry", image: "default.jpg" },
+                { text: "I'd like a drink", image: "default.jpg" }
+            ]
+        };
+    }
+
+
     // Load the first category by default
     populateGrid('food');
     
@@ -997,10 +1199,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Set up management panel buttons
-    const closeManagement = document.getElementById('closeManagement');
-    if (closeManagement) {
-        closeManagement.addEventListener('click', hideManagementPanel);
-    }
+  
     
     const addPhrase = document.getElementById('addPhrase');
     if (addPhrase) {
@@ -1011,12 +1210,113 @@ document.addEventListener('DOMContentLoaded', function() {
     if (removePhrase) {
         removePhrase.addEventListener('click', removeSelectedPhrase);
     }
-    
+    // === SUBTITLES TOGGLE PREFERENCE ===
+const toggleSubtitles = document.getElementById('toggleSubtitles');
+
+if (toggleSubtitles) {
+  // Load saved setting (default = true)
+  const saved = localStorage.getItem('showSubtitles');
+  toggleSubtitles.checked = saved !== 'false';
+
+  // Save new setting whenever changed
+  toggleSubtitles.addEventListener('change', () => {
+    localStorage.setItem('showSubtitles', toggleSubtitles.checked);
+    showToast(
+      toggleSubtitles.checked
+        ? '🟢 Subtitles enabled'
+        : '⚫ Subtitles disabled',
+      'success'
+    );
+  });
+}
+
     const exportData = document.getElementById('exportData');
     if (exportData) {
         exportData.addEventListener('click', exportButtonData);
     }
     
+// === SPEECH SUBTITLE TOGGLE (TOP BAR) ===
+const subtitleToggle = document.getElementById('subtitleToggle');
+
+if (subtitleToggle) {
+  // Initialise state
+  const showSubtitles = localStorage.getItem('showSubtitles') !== 'false';
+  subtitleToggle.classList.toggle('active', showSubtitles);
+  subtitleToggle.textContent = showSubtitles ? '💬' : '💭';
+
+  subtitleToggle.addEventListener('click', () => {
+    const currentlyOn = localStorage.getItem('showSubtitles') !== 'false';
+    const newState = !currentlyOn;
+    localStorage.setItem('showSubtitles', newState);
+    subtitleToggle.classList.toggle('active', newState);
+    subtitleToggle.textContent = newState ? '💬' : '💭';
+    showToast(newState ? '🟢 Subtitles ON' : '⚫ Subtitles OFF', 'success');
+  });
+}
+
+
+// === THEME TOGGLE ===
+const themeToggle = document.getElementById('themeToggle');
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.body.dataset.theme = savedTheme;
+themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const currentTheme = document.body.dataset.theme;
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.dataset.theme = newTheme;
+    localStorage.setItem('theme', newTheme);
+    themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+  });
+}
+
+//
+
+
+    // === IMPORT DATA FEATURE ===
+    const importDataBtn = document.getElementById('importData');
+    const importFileInput = document.getElementById('importFile');
+
+    if (importDataBtn && importFileInput) {
+        // Clicking "Import Data" opens file chooser
+        importDataBtn.addEventListener('click', () => importFileInput.click());
+
+        // When user selects a JSON file
+      importFileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const imported = JSON.parse(event.target.result);
+      const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+
+      const localTime = new Date(localData.lastModified || 0);
+      const importTime = new Date(imported.lastModified || 0);
+
+      if (importTime > localTime) {
+        if (confirm(`Import file is newer (last updated ${importTime.toLocaleString()}). Replace current data?`)) {
+          buttonData = imported.buttonData || imported; // support old format
+          saveDataToStorage();
+          populateGrid('food');
+          showToast('✅ Newer data imported successfully!', 'success');
+        } else {
+          showToast('Import cancelled.', 'warning');
+        }
+      } else {
+        showToast('⚠️ Import file is older or missing timestamp — skipped.', 'warning');
+      }
+    } catch (err) {
+      alert('❌ Import failed: invalid file.');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+});
+
+    }
+
     const showAllPhrasesBtn = document.getElementById('showAllPhrases');
     if (showAllPhrasesBtn) {
         showAllPhrasesBtn.addEventListener('click', showAllPhrases);
@@ -1083,7 +1383,32 @@ document.addEventListener('DOMContentLoaded', function() {
         populateEditPhraseOptions();
         populateReorderList();
     }, 500);
+
+// === MANAGEMENT OVERLAY CLICK BEHAVIOUR ===
+const managementOverlay = document.getElementById('managementOverlay');
+const managementPanel = document.getElementById('managementPanel');
+const closeManagementBtn = document.getElementById('closeManagement');
+
+if (managementOverlay && managementPanel) {
+  // Close when clicking ❌
+  if (closeManagementBtn) {
+    closeManagementBtn.addEventListener('click', hideManagementPanel);
+  }
+
+  // Close when clicking outside the panel
+  managementOverlay.addEventListener('click', (event) => {
+    if (!managementPanel.contains(event.target)) {
+      hideManagementPanel();
+    }
+  });
+
+  // Optional: close with Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') hideManagementPanel();
+  });
+}
     
+
     console.log('App initialization complete!');
 });
 

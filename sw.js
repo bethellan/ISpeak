@@ -21,14 +21,17 @@ self.addEventListener('install', function(event) {
 });
 
 // Fetch event - serve from cache, fallback to network
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
-      .then(function(response) {
-        // Return cached version or fetch from network
-        return response || fetch(event.request);
-      }
-    )
+    caches.match(event.request).then((response) => {
+      if (response) return response;
+      return fetch(event.request).then((networkResponse) => {
+        if (event.request.url.endsWith('.jpg') || event.request.url.endsWith('.png')) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
+        }
+        return networkResponse;
+      }).catch(() => caches.match('./images/default.jpg'));
+    })
   );
 });
 
@@ -46,4 +49,12 @@ self.addEventListener('activate', function(event) {
       );
     })
   );
+});
+
+
+// === Listen for skipWaiting message from the page ===
+self.addEventListener('message', (event) => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });

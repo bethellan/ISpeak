@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyNewVoice - Communication Tool</title>
     <meta name="theme-color" content="#4CAF50">
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,7 +15,12 @@
     <div class="container">
         <!-- Toast Notifications -->
         <div id="toast" class="toast" aria-live="polite" aria-atomic="true"></div>
-        
+        <!-- Auto-Save Indicator -->
+
+	<div id="autosaveIndicator" class="autosave-indicator" aria-live="polite" aria-atomic="true">
+  	💾 Saved
+	</div>
+
         <!-- Message Display Bar -->
         <div id="messageBar" role="status" aria-live="polite">
             <p>Select a button to speak...</p>
@@ -28,7 +36,13 @@
         <button id="managementToggle" class="management-toggle" title="Manage Content" aria-label="Open management panel">
             ⚙️
         </button>
-        
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="theme-toggle" title="Toggle light/dark theme" aria-label="Toggle theme">
+       🌙
+        </button>
+	<!-- Speech Subtitles Toggle -->
+	<button id="subtitleToggle" class="subtitle-toggle" title="Toggle speech subtitles" aria-label="Toggle speech subtitles">💬</button>
+
         <!-- Tab Navigation -->
         <nav class="tab-container" role="tablist" aria-label="Communication categories">
             <button class="tab active" data-category="food" role="tab" aria-selected="true">Food & Drink</button>
@@ -63,17 +77,28 @@
             </div>
         </div>
 
-        <!-- Content Management Panel -->
-        <div id="managementPanel" class="management-panel" role="dialog" aria-labelledby="managementPanelTitle" aria-modal="true">
-            <h3 id="managementPanelTitle">Content Management</h3>
-            
-            <div class="management-section">
-                <h4>Export/Backup</h4>
-                <button id="exportData" class="management-btn">📥 Export All Data</button>
-                <button id="importData" class="management-btn">📤 Import Data</button>
-                <input type="file" id="importFile" accept=".json" style="display: none;">
-                <p class="help-text">Download a backup of all phrases and people or import from a backup file</p>
-            </div>
+        <!-- Content Management Overlay -->
+       <div id="managementOverlay" class="management-overlay">
+  <div id="managementPanel" class="management-panel" role="dialog" aria-labelledby="managementPanelTitle" aria-modal="true">
+
+      <h3 id="managementPanelTitle">Content Management</h3>
+      
+      <div class="management-section">
+          <h4>Export/Backup</h4>
+          <button id="exportData" class="management-btn">📥 Export All Data</button>
+          <button id="importData" class="management-btn">📤 Import Data</button>
+          <input type="file" id="importFile" accept=".json" style="display: none;">
+          <p class="help-text">Download a backup of all phrases and people or import from a backup file</p>
+      </div>
+
+      <!-- Subtitles toggle -->
+      <div class="management-section">
+        <label>
+          <input type="checkbox" id="toggleSubtitles" checked>
+          Show speech subtitles
+        </label>
+        <p class="help-text">Turn off if you don't want text displayed during speech.</p>
+      </div>
 
             <div class="management-section">
                 <h4>Add New Phrase</h4>
@@ -176,10 +201,14 @@
                 <button id="resetData" class="management-btn remove-btn">🔄 Reset to Default Data</button>
             </div>
 
-            <button id="closeManagement" class="management-btn close-btn">❌ Close Management</button>
-        </div>
-    </div>
+              <button id="closeManagement" class="management-btn close-btn">❌ Close Management</button>
+  </div>
+</div>
     
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
+
+<!-- Speech Feedback Subtitles -->
+<div id="speechSubtitle" class="speech-subtitle" aria-live="polite" aria-atomic="true"></div>
+
 </body>
 </html>
